@@ -1,0 +1,21 @@
+{
+  "name": "jdrupal-ng",
+  "version": "0.0.0",
+  "homepage": "https://github.com/easystreet3/jdrupal-ng",
+  "authors": [
+    "Tyler Frankenstein <tyler.frankenstein@gmail.com>"
+  ],
+  "description": "An Angular module for Drupal RESTful Services.",
+  "keywords": [
+    "angular",
+    "drupal"
+  ],
+  "license": "GNU",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
