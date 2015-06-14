@@ -1,39 +1,34 @@
 /**
- * The jdrupal-ng Angular module.
+ * The angular-drupal module.
  */
-angular.module('jdrupal-ng', []).
-  service('jdrupal', ['$http', 'jdrupalSettings', jdrupal]).
-  value('jdrupalSettings', null).factory('alert', function($window) {
-    return function(text) {
-      $window.alert(text);
-    }
-  }).
-  
-  value('salutation', 'Hello').
-  
-  factory('greet', function(alert, salutation) {
-    return function(name) {
-      alert(salutation + ' ' + name + '!');
-    }
-  });
+angular.module('angular-drupal', []).
+  service('drupal', ['$http', 'drupalSettings', drupal]).
+  value('drupalSettings', null).
+  value('drupalToken', null);
 
 /**
- * The "jdrupal" Angular Service.
+ * The drupal service for the angular-drupal module.
  */
-function jdrupal($http, jdrupalSettings) {
-  this.sitePath = jdrupalSettings.site_path
-  this.restPath = this.sitePath + '/?q=' + jdrupalSettings.endpoint;
+function drupal($http, drupalSettings, drupalToken) {
+  
+  // GLOBALS
+  this.sitePath = drupalSettings.site_path
+  this.restPath = this.sitePath + '/?q=' + drupalSettings.endpoint;
   
   // TOKEN (X-CSRF-Token)
-  
-  this.token = function(result) {
-    return $http.get(this.sitePath + '/?q=services/session/token').success(function(token) {
-        Drupal.sessid = token;
+  this.token = function() {
+    if (drupalToken) { return drupalToken; }
+    return $http.get(this.sitePath + '/?q=services/session/token').then(function(result) {
+        console.log(result);
+        if (result.status == 200) {
+          drupalToken = result.data;
+          console.log('grabbed token from server: ' + drupalToken);
+          return drupalToken;
+        }
     });
   };
-  
+
   // SYSTEM CONNECT
-  
   this.system_connect = function() {
     var options = {
       method: 'POST',
