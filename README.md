@@ -1,2 +1,2 @@
-# jdrupal-ng
-An Angular module for Drupal REST.
+# angular-drupal
+An Angular module for Drupal RESTful Services.
