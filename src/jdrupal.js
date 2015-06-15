@@ -10,16 +10,20 @@ angular.module('angular-drupal', []).
  * The drupal service for the angular-drupal module.
  */
 function drupal($http, drupalSettings, drupalToken) {
-  
+
   // GLOBALS
-  this.sitePath = drupalSettings.site_path
-  this.restPath = this.sitePath + '/?q=' + drupalSettings.endpoint;
-  
+  var sitePath = drupalSettings.site_path;
+  var restPath = sitePath + '/?q=' + drupalSettings.endpoint;
+  this.sitePath = sitePath;
+  this.restPath = restPath;
+
   // TOKEN (X-CSRF-Token)
   this.token = function() {
-    if (drupalToken) { return drupalToken; }
-    return $http.get(this.sitePath + '/?q=services/session/token').then(function(result) {
-        console.log(result);
+    if (drupalToken) {
+      console.log('grabbed token from memory: ' + drupalToken);
+      return drupalToken;
+    }
+    return $http.get(sitePath + '/?q=services/session/token').then(function(result) {
         if (result.status == 200) {
           drupalToken = result.data;
           console.log('grabbed token from server: ' + drupalToken);
@@ -29,20 +33,16 @@ function drupal($http, drupalSettings, drupalToken) {
   };
 
   // SYSTEM CONNECT
-  this.system_connect = function() {
-    var options = {
-      method: 'POST',
-      url: this.restPath + '/system/connect.json',
-      headers: { }
-    };
-    if (!Drupal.sessid) {
-      return this.token().success(function(token) {
-          options.headers['X-CSRF-Token'] = token;
-          return $http(options);
-      });
-    }
-    options.headers['X-CSRF-Token'] = Drupal.sessid;
-    return $http(options);
+  this.connect = function() {
+    return this.token().then(function(token) {
+        return $http({
+          method: 'POST',
+          url: restPath + '/system/connect.json',
+          headers: { 'X-CSRF-Token': token } 
+        }).then(function(result) {
+          if (result.status == 200) { return result.data; }
+        });
+    });
   };
   
   // USER LOGIN
