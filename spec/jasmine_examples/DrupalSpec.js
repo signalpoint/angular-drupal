@@ -44,6 +44,18 @@ describe('drupal services', function () {
         $httpBackend.flush();
     });
 
+    // USER LOGIN
+    it('drupal.user_login()', function () {
+        $httpBackend.expectPOST(drupal.restPath + '/user/login.json').respond(drupal_spec_connect_authenticated());
+        $httpBackend.expectGET(drupal_spec_token_url(drupal)).respond(drupal_spec_token());
+        $httpBackend.expectPOST(drupal.restPath + '/system/connect.json').respond(drupal_spec_connect_authenticated());
+        drupal.user_login('bob', 'secret').then(function(data) {
+            expect(data.user.uid).toEqual(drupal_spec_connect_authenticated().user.uid);
+            expect(data.user.name).toEqual(drupal_spec_connect_authenticated().user.name);
+        });
+        $httpBackend.flush();
+    });
+
 });
 
 /**
