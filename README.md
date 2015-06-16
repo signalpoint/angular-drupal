@@ -17,13 +17,15 @@ mechanism.
 
 Here's a simple app that injects the `drupal` service into the app's `run`
 function. Then when the app runs it makes a call to the Drupal server and
-retrieves the `X-CSRF-Token`:
+logs the user in with the provided credentials:
 
 ```
 angular.module('myApp', ['angular-drupal']).run(['drupal', function(drupal) {
 
-  drupal.token().then(function(token) {
-    console.log('Got the token: ' + token);
+  drupal.user_login('bob', 'secret').then(function(data) {
+    if (data.user.uid) {
+      alert('Hello ' + data.user.name + '!');
+    }
   });
 
 }]);
@@ -31,7 +33,7 @@ angular.module('myApp', ['angular-drupal']).run(['drupal', function(drupal) {
 angular.module('angular-drupal').config(function($provide) {
 
   $provide.value('drupalSettings', {
-    site_path: 'http://my-drupal-site.com',
+    sitePath: 'http://my-drupal-site.com',
     endpoint: 'my-services-endpoint'
   });
 
@@ -54,9 +56,17 @@ drupal.token().then(function(token) {
 ## SYSTEM CONNECT
 ```
 drupal.connect().then(function(data) {
-  var user = data.user;
-  if (user.uid == 0) { alert('Please login.'); }
-  else { alert('Hello ' + user.name + '!'); }
+  if (data.user.uid) { alert('Hello ' + data.user.name + '!'); }
+  else { alert('Please login.');  }
 });
+```
+
+## USER LOGIN
+```
+drupal.user_login('bob', 'secret').then(function(data) {
+    if (data.user.uid) {
+      alert('Hello ' + data.user.name + '!');
+    }
+  });
 ```
 
