@@ -4,8 +4,9 @@ An Angular module for Drupal RESTful Services.
 
 # Setup and Configuration
 
-As usual, be sure to include the angular-drupal.js file in your app (typically
-in the index.html file somewhere after you include angular.js):
+As usual, be sure to include the `angular-drupal.js` file in your app. This
+typically is included via the index.html file somewhere after you include the
+`angular.js` file:
 
 ```
 <script src="angular-drupal.js"></script>
@@ -46,14 +47,7 @@ endpoint. Without this, the module won't know how to connect to our Drupal site.
 
 # Usage
 
-## X-CSRF-Token
-```
-drupal.token().then(function(token) {
-  console.log('Got the token: ' + token);
-});
-```
-
-## SYSTEM CONNECT
+## CONNECT
 ```
 drupal.connect().then(function(data) {
   if (data.user.uid) { alert('Hello ' + data.user.name + '!'); }
@@ -76,6 +70,16 @@ drupal.user_logout().then(function(data) {
   if (!data.user.uid) {
     alert('Logged out!');
   }
+});
+```
+
+## X-CSRF-Token
+The `angular-drupal` module automatically takes care of the `X-CSRF-Token` when
+it is needed during REST calls. If you need to manually retrieve the token it
+can easily be retrieved:
+```
+drupal.token().then(function(token) {
+  console.log('Got the token: ' + token);
 });
 ```
 
