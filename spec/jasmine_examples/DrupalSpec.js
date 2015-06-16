@@ -56,6 +56,18 @@ describe('drupal services', function () {
         $httpBackend.flush();
     });
 
+    // USER LOGOUT
+    it('drupal.user_logout()', function () {
+        $httpBackend.expectGET(drupal_spec_token_url(drupal)).respond(drupal_spec_token());
+        $httpBackend.expectPOST(drupal.restPath + '/user/logout.json').respond(drupal_spec_connect_anonymous());
+        $httpBackend.expectGET(drupal_spec_token_url(drupal)).respond(drupal_spec_token());
+        $httpBackend.expectPOST(drupal.restPath + '/system/connect.json').respond(drupal_spec_connect_anonymous());
+        drupal.user_logout().then(function(data) {
+            expect(data.user.uid).toEqual(drupal_spec_connect_anonymous().user.uid);
+        });
+        $httpBackend.flush();
+    });
+
 });
 
 /**
