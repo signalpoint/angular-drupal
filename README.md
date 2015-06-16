@@ -75,8 +75,8 @@ drupal.user_logout().then(function(data) {
 
 ## X-CSRF-Token
 The `angular-drupal` module automatically takes care of the `X-CSRF-Token` when
-it is needed during REST calls. If you need to manually retrieve the token it
-can easily be retrieved:
+it is needed during REST calls. If you need to manually get the token it can
+easily be retrieved:
 ```
 drupal.token().then(function(token) {
   console.log('Got the token: ' + token);
