@@ -4,11 +4,11 @@ An Angular module for Drupal Services.
 
 # Intro
 
-This Angular module makes it easy to read/write entity data to/from Drupal, as
-well as handling user authentication and registration.
+This Angular module makes it easy to `read/write` entity data `to/from` Drupal,
+as well as handling user authentication and registration.
 
 Here's a very *simple* Angular app that loads node # 123 from Drupal and then
-displays (via an alert) the node's title:
+displays the node's title (via an `alert`):
 
 ```
 // My simple app.
@@ -126,11 +126,17 @@ drupal.user_load(1).then(function(account) {
 
 ## X-CSRF-Token
 The `angular-drupal` module automatically takes care of the `X-CSRF-Token` when
-it is needed during REST calls. If you need to manually get the token it can
-easily be retrieved:
+it is needed. If you need to manually get the token it can easily be retrieved:
 ```
 drupal.token().then(function(token) {
   console.log('Got the token: ' + token);
 });
 ```
+
+# DISCLAIMER
+I (Tyler Frankenstein), admit I am very much a n00b when it comes to Angular JS.
+The way this module is currently written is by no means the "Angular" way to do
+it. Writing this module is my gateway into learning Angular. This module has
+unit test coverage to maintain quality. I very much welcome comments, criticisms
+and contributions for this project. Thank you!
 
