@@ -1,36 +1,26 @@
 # angular-drupal
 
-An Angular module for Drupal RESTful Services.
+An Angular module for Drupal Services.
 
-# Setup and Configuration
+# Intro
 
-As usual, be sure to include the `angular-drupal.js` file in your app. This
-typically is included via the index.html file somewhere after you include the
-`angular.js` file:
+This Angular module makes it easy to read/write entity data to/from Drupal, as
+well as handling user authentication and registration.
 
-```
-<script src="angular-drupal.js"></script>
-```
-
-The `angular-drupal` module comes with a Service called `drupal`. You can
-include this service throughout your app using Angular's dependency injection
-mechanism.
-
-Here's a simple app that injects the `drupal` service into the app's `run`
-function. Then when the app runs it makes a call to the Drupal server and
-logs the user in with the provided credentials:
+Here's a very *simple* Angular app that loads node # 123 from Drupal and then
+displays (via an alert) the node's title:
 
 ```
+// My simple app.
 angular.module('myApp', ['angular-drupal']).run(['drupal', function(drupal) {
 
-  drupal.user_login('bob', 'secret').then(function(data) {
-    if (data.user.uid) {
-      alert('Hello ' + data.user.name + '!');
-    }
+  drupal.node_load(123).then(function(node) {
+    alert(node.title);
   });
 
 }]);
 
+// The angular-drupal configuration settings for my simple app.
 angular.module('angular-drupal').config(function($provide) {
 
   $provide.value('drupalSettings', {
@@ -41,9 +31,28 @@ angular.module('angular-drupal').config(function($provide) {
 });
 ```
 
-Notice how we use the `config` function on the `angular-drupal` module to
-provide the URL to our Drupal site, as well as the machine name of the Services
-endpoint. Without this, the module won't know how to connect to our Drupal site.
+# Setup and Configuration
+
+As usual, be sure to include the `angular-drupal.js` file in your app. This
+typically is included via the `index.html` file somewhere after you include the
+`angular.js` file:
+
+```
+<script src="angular-drupal.js"></script>
+```
+
+The `angular-drupal` module comes with a Service called `drupal`. You can
+include this service throughout your app using Angular's dependency injection
+mechanism.
+
+The simple app, listed above, injects the `drupal` service into the app's `run`
+function. Then when the app runs it loads node # 123 from Drupal and then
+alerts the node's title.
+
+Notice how we used a `config` function on the `angular-drupal` module in the
+simple app to provide the URL to our Drupal site, as well as the machine name of
+the Services endpoint. Without this, the module won't know how to connect to
+our Drupal site, so this must be added to our app as in the example above.
 
 # Usage
 
@@ -70,6 +79,48 @@ drupal.user_logout().then(function(data) {
   if (!data.user.uid) {
     alert('Logged out!');
   }
+});
+```
+
+## COMMENT LOAD
+```
+drupal.comment_load(123).then(function(comment) {        
+    alert('Loaded comment: ' + comment.subject);  
+});
+```
+
+## FILE LOAD
+```
+drupal.file_load(123).then(function(file) {
+    alert('Loaded file: ' + file.filename);
+});
+```
+
+## NODE LOAD
+```
+drupal.node_load(123).then(function(node) {
+    alert('Loaded node: ' + node.title);
+});
+```
+
+## TAXONOMY TERM LOAD
+```
+drupal.taxonomy_term_load(123).then(function(term) {
+    alert('Loaded term: ' + term.name);
+});
+```
+
+## TAXONOMY VOCABULARY LOAD
+```
+drupal.taxonomy_vocabulary_load(1).then(function(vocabulary) {
+    alert('Loaded vocabulary: ' + vocabulary.name); 
+});
+```
+
+## USER LOAD
+```
+drupal.user_load(1).then(function(account) {
+    alert('Loaded user: ' + account.name);  
 });
 ```
 
