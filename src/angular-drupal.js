@@ -20,6 +20,10 @@ function drupal($http, drupalSettings, drupalToken) {
 
   // TOKEN (X-CSRF-Token)
   this.token = function() {
+
+    // @TODO depending on how deeply nested we are in "then" promises, we're
+    // losing track of the drupal and drupal.Token object as each scope
+    // progresses.
     if (typeof this.drupal !== 'undefined') {
       if (this.drupal.drupalToken) {
         console.log('grabbed token from "this" memory: ' + drupalToken);
@@ -53,7 +57,7 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // USER LOGIN
   this.user_login = function(username, password) {
 
@@ -100,10 +104,10 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // USER REGISTER
-  this.user_register = function(account) {
-    
+  /*this.user_register = function(account) {
+
     var options = {
       method: 'POST',
       url: this.restPath + '/user/register.json',
@@ -124,19 +128,49 @@ function drupal($http, drupalSettings, drupalToken) {
     options.headers['X-CSRF-Token'] = Drupal.sessid;
     return $http(options);
     
+  };*/
+  
+  // ENTITY LOAD FUNCTIONS
+  
+  this.comment_load = function(cid) {
+    return $http.get(this.restPath + '/comment/' + cid + '.json').then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
   };
   
-  // USER LOAD
-  this.user_load = function(uid) {
-    return $http.get(this.restPath + '/user/' + uid + '.json');
+  this.file_load = function(fid) {
+    return $http.get(this.restPath + '/file/' + fid + '.json').then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
   };
-  // NODE LOAD
   
   this.node_load = function(nid) {
-    return $http.get(this.restPath + '/node/' + nid + '.json');
+    return $http.get(this.restPath + '/node/' + nid + '.json').then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
   };
-  // NODE SAVE
   
+  this.taxonomy_term_load = function(tid) {
+    return $http.get(this.restPath + '/taxonomy_term/' + tid + '.json').then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
+  };
+  
+  this.taxonomy_vocabulary_load = function(vid) {
+    return $http.get(this.restPath + '/taxonomy_vocabulary/' + vid + '.json').then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
+  };
+
+  this.user_load = function(uid) {
+    return $http.get(this.restPath + '/user/' + uid + '.json').then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
+  };
+
+  
+
+  // NODE SAVE  
   this.node_save = function(node) {
     var method = null;
     var url = null;
@@ -173,6 +207,102 @@ function drupal($http, drupalSettings, drupalToken) {
     return $http(options);
   };
 
+}
+
+/**
+ * Returns an array of entity type names.
+ * @return {Array}
+ */
+function drupal_entity_types() {
+  try {
+    return [
+      'comment',
+      'file',
+      'node',
+      'taxonomy_term',
+      'taxonomy_vocabulary',
+      'user'
+    ];
+  }
+  catch (error) { console.log('drupal_entity_types - ' + error); }
+}
+
+/**
+ * Returns an entity type's primary key.
+ * @param {String} entity_type
+ * @return {String}
+ */
+function drupal_entity_primary_key(entity_type) {
+  try {
+    var key;
+    switch (entity_type) {
+      case 'comment': key = 'cid'; break;
+      case 'file': key = 'fid'; break;
+      case 'node': key = 'nid'; break;
+      case 'taxonomy_term': key = 'tid'; break;
+      case 'taxonomy_vocabulary': key = 'vid'; break;
+      case 'user': key = 'uid'; break;
+      default:
+        // Is anyone declaring the primary key for this entity type?
+        var function_name = entity_type + '_primary_key';
+        if (drupal_function_exists(function_name)) {
+          var fn = window[function_name];
+          key = fn(entity_type);
+        }
+        else {
+          var msg = 'drupal_entity_primary_key - unsupported entity type (' +
+            entity_type + ') - to add support, declare ' + function_name +
+            '() and have it return the primary key column name as a string';
+          console.log(msg);
+        }
+        break;
+    }
+    return key;
+  }
+  catch (error) { console.log('drupal_entity_primary_key - ' + error); }
+}
+
+/**
+ * Returns an entity type's primary title key.
+ * @param {String} entity_type
+ * @return {String}
+ */
+function drupal_entity_primary_key_title(entity_type) {
+  try {
+    var key;
+    switch (entity_type) {
+      case 'comment': key = 'subject'; break;
+      case 'file': key = 'filename'; break;
+      case 'node': key = 'title'; break;
+      case 'taxonomy_term': key = 'name'; break;
+      case 'taxonomy_vocabulary': key = 'name'; break;
+      case 'user': key = 'name'; break;
+      default:
+        console.log(
+          'drupal_entity_primary_key_title - unsupported entity type (' +
+            entity_type +
+          ')'
+        );
+        break;
+    }
+    return key;
+  }
+  catch (error) { console.log('drupal_entity_primary_key_title - ' + error); }
+}
+
+/**
+ * Given a JS function name, this returns true if the function exists in the
+ * scope, false otherwise.
+ * @param {String} name
+ * @return {Boolean}
+ */
+function drupal_function_exists(name) {
+  try {
+    return (eval('typeof ' + name) == 'function');
+  }
+  catch (error) {
+    alert('drupal_function_exists - ' + error);
+  }
 }
 
 /**
