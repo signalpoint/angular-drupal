@@ -64,9 +64,18 @@ drupal.connect().then(function(data) {
 ## USER LOGIN
 ```
 drupal.user_login('bob', 'secret').then(function(data) {
-    if (data.user.uid) {
-      alert('Hello ' + data.user.name + '!');
-    }
-  });
+  if (data.user.uid) {
+    alert('Hello ' + data.user.name + '!');
+  }
+});
+```
+
+## USER LOGOUT
+```
+drupal.user_logout().then(function(data) {
+  if (!data.user.uid) {
+    alert('Logged out!');
+  }
+});
 ```
 
