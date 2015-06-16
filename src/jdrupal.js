@@ -20,8 +20,14 @@ function drupal($http, drupalSettings, drupalToken) {
 
   // TOKEN (X-CSRF-Token)
   this.token = function() {
-    if (drupalToken) {
-      //console.log('grabbed token from memory: ' + drupalToken);
+    if (typeof this.drupal !== 'undefined') {
+      if (this.drupal.drupalToken) {
+        console.log('grabbed token from "this" memory: ' + drupalToken);
+        return this.drupal.drupalToken;
+      }
+    }
+    else if (drupalToken) {
+      console.log('grabbed token from memory: ' + drupalToken);
       return drupalToken;
     }
     return $http.get(sitePath + '/?q=services/session/token').then(function(result) {
@@ -35,7 +41,9 @@ function drupal($http, drupalSettings, drupalToken) {
 
   // SYSTEM CONNECT
   this.connect = function() {
-    return this.token().then(function(token) {
+    var _token_fn = typeof this.token !== 'undefined' ?
+      this.token : this.drupal.token;
+    return _token_fn().then(function(token) {
         return $http({
           method: 'POST',
           url: restPath + '/system/connect.json',
@@ -47,22 +55,18 @@ function drupal($http, drupalSettings, drupalToken) {
   };
   
   // USER LOGIN
-
   this.user_login = function(username, password) {
 
     // @TODO logging in takes 3 calls to the server (logging in, grabbing a new
     // token, then system connecting), this should be a single service resource
-    // (like it used to be in the early DrupalGap days).
+    // (like it used to be in the early DrupalGap days). This should be
+    // included with the angular_drupal drupal module (yet to be created).
 
-    // Set aside this as drupal so we can use it later.
     var drupal = this;
-
     return $http({
         method: 'POST',
         url: restPath + '/user/login.json',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         transformRequest: function(obj) {
           var str = [];
           for(var p in obj)
@@ -82,28 +86,22 @@ function drupal($http, drupalSettings, drupalToken) {
   };
 
   // USER LOGOUT
-
   this.user_logout = function() {
-    
-    var restPath = this.restPath;
-    return this.token().success(function(token) {
-        $http({
+    var drupal = this;
+    return this.token().then(function(token) {
+        return $http({
             method: 'POST',
             url: restPath + '/user/logout.json',
-            headers: {
-              'X-CSRF-Token': token
-            }
-        }).success(function(result) {
-          // Now that we logged out, clear the sessid and call system connect.
-          Drupal.user = drupal_user_defaults();
-          Drupal.sessid = null;
+            headers: { 'X-CSRF-Token': token }
+        }).then(function(result) {
+          this.drupal.drupalUser = drupal_user_defaults();
+          this.drupal.drupalToken = null;
+          return drupal.connect();
         });
     });
-
   };
   
   // USER REGISTER
-  
   this.user_register = function(account) {
     
     var options = {
@@ -129,17 +127,14 @@ function drupal($http, drupalSettings, drupalToken) {
   };
   
   // USER LOAD
-  
   this.user_load = function(uid) {
     return $http.get(this.restPath + '/user/' + uid + '.json');
   };
-  
   // NODE LOAD
   
   this.node_load = function(nid) {
     return $http.get(this.restPath + '/node/' + nid + '.json');
   };
-  
   // NODE SAVE
   
   this.node_save = function(node) {
@@ -178,5 +173,20 @@ function drupal($http, drupalSettings, drupalToken) {
     return $http(options);
   };
 
+}
+
+/**
+ * Returns a default JSON object representing an anonymous Drupal user account.
+ * @return {Object}
+ */
+function drupal_user_defaults() {
+  try {
+    return {
+      uid: '0',
+      roles: {'1': 'anonymous user'},
+      permissions: []
+    };
+  }
+  catch (error) { console.log('drupal_user_defaults - ' + error); }
 }
 
