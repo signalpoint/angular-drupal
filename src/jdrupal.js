@@ -4,7 +4,8 @@
 angular.module('angular-drupal', []).
   service('drupal', ['$http', 'drupalSettings', drupal]).
   value('drupalSettings', null).
-  value('drupalToken', null);
+  value('drupalToken', null).
+  value('drupalUser', null);
 
 /**
  * The drupal service for the angular-drupal module.
@@ -12,7 +13,7 @@ angular.module('angular-drupal', []).
 function drupal($http, drupalSettings, drupalToken) {
 
   // GLOBALS
-  var sitePath = drupalSettings.site_path;
+  var sitePath = drupalSettings.sitePath;
   var restPath = sitePath + '/?q=' + drupalSettings.endpoint;
   this.sitePath = sitePath;
   this.restPath = restPath;
@@ -20,13 +21,13 @@ function drupal($http, drupalSettings, drupalToken) {
   // TOKEN (X-CSRF-Token)
   this.token = function() {
     if (drupalToken) {
-      console.log('grabbed token from memory: ' + drupalToken);
+      //console.log('grabbed token from memory: ' + drupalToken);
       return drupalToken;
     }
     return $http.get(sitePath + '/?q=services/session/token').then(function(result) {
         if (result.status == 200) {
           drupalToken = result.data;
-          console.log('grabbed token from server: ' + drupalToken);
+          //console.log('grabbed token from server: ' + drupalToken);
           return drupalToken;
         }
     });
@@ -48,48 +49,38 @@ function drupal($http, drupalSettings, drupalToken) {
   // USER LOGIN
 
   this.user_login = function(username, password) {
-    
+
     // @TODO logging in takes 3 calls to the server (logging in, grabbing a new
     // token, then system connecting), this should be a single service resource
-    // (like it used to be in the early DrupalGap days). Make it available in
-    // the jDrupal Drupal module.
-    
-    // Hang onto the rest path, so it will be available later in the scope.
-    var restPath = this.restPath;
-    
-    // Make the login attempt via POST without a token...
+    // (like it used to be in the early DrupalGap days).
+
+    // Set aside this as drupal so we can use it later.
+    var drupal = this;
+
     return $http({
         method: 'POST',
         url: restPath + '/user/login.json',
-        data: $.param({
-            username: username,
-            password: password
-        }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        transformRequest: function(obj) {
+          var str = [];
+          for(var p in obj)
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+          return str.join("&");
+        },
+        data: {
+          username: username,
+          password: password
         }
-    }).success(function(result) {
-      
-      // We're logged in...
-      
-      // Set the user account, clear out the session id, retrieve a new CSRF
-      // token and then make a system connect call.
-      Drupal.user = result.user;
-      Drupal.sessid = null;
-      return $http.get(this.sitePath + '/?q=services/session/token').success(function(token) {
-          Drupal.sessid = token;
-          var options = {
-            method: 'POST',
-            url: restPath + '/system/connect.json',
-            headers: {
-              'X-CSRF-Token': Drupal.sessid
-            }
-          };
-          return $http(options);
-      });
+    }).then(function(result) {
+      drupal.drupalUser = result.user;
+      drupal.drupalToken = null;
+      return drupal.connect();
     });
+
   };
-  
+
   // USER LOGOUT
 
   this.user_logout = function() {
