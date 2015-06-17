@@ -90,6 +90,8 @@ drupal.comment_load(123).then(function(comment) {
 ```
 
 ## FILE LOAD
+To load a file the user must have the `Get any binary files ` permission in
+Drupal.
 ```
 drupal.file_load(123).then(function(file) {
     alert('Loaded file: ' + file.filename);
@@ -174,7 +176,61 @@ drupal.taxonomy_vocabulary_load(1).then(function(vocabulary) {
 ## USER LOAD
 ```
 drupal.user_load(1).then(function(account) {
-    alert('Loaded user: ' + account.name);  
+    alert('Loaded user: ' + account.name);
+});
+```
+
+## USER SAVE - NEW
+To create a new user account, the user must have the `Administer users`
+permission enabled in Drupal.
+```
+var account = {
+  name: 'jane',
+  mail: 'jane@example.com',
+  pass: 'secret-sauce'
+};
+drupal.user_save(account).then(function(data) {
+  alert('Created new user #' + data.uid);
+});
+```
+
+## USER SAVE - EXISTING
+To update an existing user account, the user must have the `Change own username`
+or `Administer users` permission enabled in Drupal.
+```
+var account = {
+  uid: 123,
+  name: 'john'
+};
+drupal.user_save(account).then(function(data) {
+  alert('Name changed to: ' + data.name);
+});
+```
+
+## USER DELETE
+The user must have the `Administer users` permission to delete a user account.
+```
+drupal.user_delete(123).then(function(data) {
+    if (data[0]) {
+      alert('Deleted user.');
+    }
+});
+```
+
+## USER INDEX
+```
+var query = {
+  parameters: {
+    'name': 'bob'
+  }
+};
+drupal.user_index(query).then(function(users) {
+    var msg = '';
+    for (var i = 0; i < users.length; i++) {
+      var user = users[i];
+      msg += 'Loaded user: ' + user.name + '\n';
+    }
+    alert(msg);
 });
 ```
 

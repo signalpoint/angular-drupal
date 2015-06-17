@@ -178,6 +178,34 @@ describe('drupal services', function () {
         $httpBackend.flush();
     });
     
+    // USER SAVE - NEW
+    it('drupal.user_save() - new', function () {
+        var user = drupal_spec_entity_save_new_response('user');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPOST(restPath + '/user.json').respond(user);
+        drupal.user_save(user).then(function(entity) {
+            var key = drupal_entity_primary_key('user');
+            var title = drupal_entity_primary_key_title('user');
+            expect(entity[key]).not.toBeNull();
+            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('user')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
+    // USER SAVE - EXISTING
+    it('drupal.user_save() - existing', function () {
+        var user = drupal_spec_entity_save_existing_response('user');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPUT(restPath + '/user/' + user.uid + '.json').respond(user);
+        drupal.user_save(user).then(function(entity) {
+            var key = drupal_entity_primary_key('user');
+            var title = drupal_entity_primary_key_title('user');
+            expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('user')[key]);
+            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('user')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
     // ENTITY DELETE FUNCTIONS
     
     // NODE DELETE
@@ -186,6 +214,16 @@ describe('drupal services', function () {
         $httpBackend.expectDELETE(restPath + '/node/123.json').respond(drupal_spec_entity_delete_response('node'));
         drupal.node_delete(123).then(function(data) {
             expect(data[0]).toEqual(drupal_spec_entity_delete_response('node')[0]);
+        });
+        $httpBackend.flush();
+    });
+    
+    // USER DELETE
+    it('drupal.user_delete()', function () {
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectDELETE(restPath + '/user/123.json').respond(drupal_spec_entity_delete_response('user'));
+        drupal.user_delete(123).then(function(data) {
+            expect(data[0]).toEqual(drupal_spec_entity_delete_response('user')[0]);
         });
         $httpBackend.flush();
     });
@@ -199,6 +237,17 @@ describe('drupal services', function () {
         $httpBackend.expectGET(path).respond(drupal_spec_entity_index_response('node'));
         drupal.node_index(query).then(function(nodes) {
             expect(nodes.length).toEqual(drupal_spec_entity_index_response('node').length);
+        });
+        $httpBackend.flush();
+    });
+    
+    // USER INDEX
+    it('drupal.user_index()', function () {
+        var query = drupal_spec_entity_index_query('user');
+        var path = restPath + '/user.json&' + drupal_entity_index_build_query_string(query);
+        $httpBackend.expectGET(path).respond(drupal_spec_entity_index_response('user'));
+        drupal.user_index(query).then(function(users) {
+            expect(users.length).toEqual(drupal_spec_entity_index_response('user').length);
         });
         $httpBackend.flush();
     });

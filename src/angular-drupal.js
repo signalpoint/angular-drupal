@@ -186,7 +186,33 @@ function drupal($http, drupalSettings, drupalToken) {
       method: method,
       url: url,
       headers: { 'Content-Type': 'application/json' },
-      data: { node: node }
+      data: { node: node } // wrap nodes
+    };
+    return this.token().then(function(token) {
+        options.headers['X-CSRF-Token'] = token
+        return $http(options).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
+  // USER SAVE  
+  this.user_save = function(account) {
+    var method = null;
+    var url = null;
+    if (!account.uid) {
+      method = 'POST';
+      url = this.restPath + '/user.json';
+    }
+    else {
+      method = 'PUT';
+      url = this.restPath + '/user/' + account.uid + '.json';
+    }
+    var options = {
+      method: method,
+      url: url,
+      headers: { 'Content-Type': 'application/json' },
+      data: account // don't wrap users
     };
     return this.token().then(function(token) {
         options.headers['X-CSRF-Token'] = token
@@ -215,11 +241,36 @@ function drupal($http, drupalSettings, drupalToken) {
     });
   };
   
+  // USER DELETE  
+  this.user_delete = function(uid) {
+    var drupal = this;
+    return this.token().then(function(token) {
+        return $http({
+            method: 'DELETE',
+            url: drupal.restPath + '/user/' + uid + '.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            }
+        }).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
   // ENTITY INDEX FUNCTIONS
   
   // NODE INDEX
   this.node_index = function(query) {
     var path = this.restPath + '/node.json&' + drupal_entity_index_build_query_string(query);
+    return $http.get(path).then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
+  };
+  
+  // USER INDEX
+  this.user_index = function(query) {
+    var path = this.restPath + '/user.json&' + drupal_entity_index_build_query_string(query);
     return $http.get(path).then(function(result) {
         if (result.status == 200) { return result.data; }
     });
