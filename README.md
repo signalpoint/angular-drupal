@@ -103,6 +103,60 @@ drupal.node_load(123).then(function(node) {
 });
 ```
 
+## NODE SAVE - NEW
+```
+var node = {
+  type: 'article',
+  title: 'Hello world',
+  language: 'und',
+  body: { und: [ { value: 'How are you?' }] }
+};
+drupal.node_save(node).then(function(data) {
+    alert('Created node: ' + data.nid);
+});
+```
+
+## NODE SAVE - EXISTING
+```
+var node = {
+  nid: 123,
+  title: 'Goodbye world',
+  language: 'und',
+  body: {
+    und: [ { value: 'I am fine, thank you.' }]
+  }
+};
+drupal.node_save(node).then(function(data) {
+    alert('Updated node: ' + data.nid);
+});
+```
+
+## NODE DELETE
+```
+drupal.node_delete(123).then(function(data) {
+    if (data[0]) {
+      alert('Deleted node.');
+    }
+});
+```
+
+## NODE INDEX
+```
+var query = {
+  parameters: {
+    'type': 'article'
+  }
+};
+drupal.node_index(query).then(function(nodes) {
+    var msg = '';
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      msg += 'Loaded node: ' + node.title + '\n';
+    }
+    alert(msg);
+});
+```
+
 ## TAXONOMY TERM LOAD
 ```
 drupal.taxonomy_term_load(123).then(function(term) {
