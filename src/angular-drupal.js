@@ -167,9 +167,9 @@ function drupal($http, drupalSettings, drupalToken) {
         if (result.status == 200) { return result.data; }
     });
   };
-
   
-
+  // ENTITY SAVE FUNCTIONS
+  
   // NODE SAVE  
   this.node_save = function(node) {
     var method = null;
@@ -185,26 +185,44 @@ function drupal($http, drupalSettings, drupalToken) {
     var options = {
       method: method,
       url: url,
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       data: { node: node }
     };
-    if (!Drupal.sessid) {
-      // @TODO this is returning the token instead of the user registration
-      // result, learn how to use promises...?
-      return $http.get(this.sitePath + '/?q=services/session/token').then(function(response) {
-          dpm('thenning!');
-          dpm(response);
-          Drupal.sessid = response.data;
-          options.headers['X-CSRF-Token'] = response.data;
-          return $http(options);
-      }).then(function(response) {
-        return response.data
-      });
-    }
-    options.headers['X-CSRF-Token'] = Drupal.sessid;
-    return $http(options);
+    return this.token().then(function(token) {
+        options.headers['X-CSRF-Token'] = token
+        return $http(options).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
+  // ENTITY DELETE FUNCTIONS
+  
+  // NODE DELETE  
+  this.node_delete = function(nid) {
+    var drupal = this;
+    return this.token().then(function(token) {
+        return $http({
+            method: 'DELETE',
+            url: drupal.restPath + '/node/' + nid + '.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            }
+        }).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
+  // ENTITY INDEX FUNCTIONS
+  
+  // NODE INDEX
+  this.node_index = function(query) {
+    var path = this.restPath + '/node.json&' + drupal_entity_index_build_query_string(query);
+    return $http.get(path).then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
   };
 
 }
@@ -269,7 +287,7 @@ function drupal_entity_primary_key(entity_type) {
  */
 function drupal_entity_primary_key_title(entity_type) {
   try {
-    var key;
+    var key = null;
     switch (entity_type) {
       case 'comment': key = 'subject'; break;
       case 'file': key = 'filename'; break;
@@ -303,6 +321,64 @@ function drupal_function_exists(name) {
   catch (error) {
     alert('drupal_function_exists - ' + error);
   }
+}
+
+/**
+ * Builds a query string from a query object for an entity index resource.
+ * @param {Object} query
+ * @return {String}
+ */
+function drupal_entity_index_build_query_string(query) {
+  try {
+    var result = '';
+    if (!query) { return result; }
+    if (query.fields) { // array
+      var fields = '';
+      for (var i = 0; i < query.fields.length; i++) {
+        fields += encodeURIComponent(query.fields[i]) + ',';
+      }
+      if (fields != '') {
+        fields = 'fields=' + fields.substring(0, fields.length - 1);
+        result += fields + '&';
+      }
+    }
+    if (query.parameters) { // object
+      var parameters = '';
+      for (var parameter in query.parameters) {
+          if (query.parameters.hasOwnProperty(parameter)) {
+            var key = encodeURIComponent(parameter);
+            var value = encodeURIComponent(query.parameters[parameter]);
+            parameters += 'parameters[' + key + ']=' + value + '&';
+          }
+      }
+      if (parameters != '') {
+        parameters = parameters.substring(0, parameters.length - 1);
+        result += parameters + '&';
+      }
+    }
+    if (query.parameters_op) { // object
+      var parameters_op = '';
+      for (var parameter_op in query.parameters_op) {
+          if (query.parameters_op.hasOwnProperty(parameter_op)) {
+            var key = encodeURIComponent(parameter_op);
+            var value = encodeURIComponent(query.parameters_op[parameter_op]);
+            parameters_op += 'parameters_op[' + key + ']=' + value + '&';
+          }
+      }
+      if (parameters_op != '') {
+        parameters_op = parameters_op.substring(0, parameters_op.length - 1);
+        result += parameters_op + '&';
+      }
+    }
+    if (typeof query.page !== 'undefined') { // int
+      result += 'page=' + encodeURIComponent(query.page) + '&';
+    }
+    if (typeof query.page_size !== 'undefined') { // int
+      result += 'pagesize=' + encodeURIComponent(query.page_size) + '&';
+    }
+    return result.substring(0, result.length - 1);
+  }
+  catch (error) { console.log('entity_index_build_query_string - ' + error); }
 }
 
 /**
