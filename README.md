@@ -56,7 +56,9 @@ our Drupal site, so this must be added to our app as in the example above.
 
 # Usage
 
-## CONNECT
+## AUTHENTICATION
+
+### CONNECT
 ```
 drupal.connect().then(function(data) {
   if (data.user.uid) { alert('Hello ' + data.user.name + '!'); }
@@ -64,7 +66,7 @@ drupal.connect().then(function(data) {
 });
 ```
 
-## USER LOGIN
+### USER LOGIN
 ```
 drupal.user_login('bob', 'secret').then(function(data) {
   if (data.user.uid) {
@@ -73,7 +75,7 @@ drupal.user_login('bob', 'secret').then(function(data) {
 });
 ```
 
-## USER LOGOUT
+### USER LOGOUT
 ```
 drupal.user_logout().then(function(data) {
   if (!data.user.uid) {
@@ -82,14 +84,9 @@ drupal.user_logout().then(function(data) {
 });
 ```
 
-## COMMENT LOAD
-```
-drupal.comment_load(123).then(function(comment) {        
-    alert('Loaded comment: ' + comment.subject);  
-});
-```
+## COMMENTS
 
-## COMMENT SAVE - NEW
+### CREATE
 ```
 var comment = {
   nid: 123,
@@ -101,7 +98,14 @@ drupal.comment_save(comment).then(function(data) {
 });
 ```
 
-## COMMENT SAVE - EXISTING
+### RETRIEVE
+```
+drupal.comment_load(123).then(function(comment) {        
+    alert('Loaded comment: ' + comment.subject);  
+});
+```
+
+### UPDATE
 ```
 var comment = {
   cid: 456,
@@ -113,7 +117,7 @@ drupal.comment_save(comment).then(function(data) {
 });
 ```
 
-## COMMENT DELETE
+### DELETE
 ```
 drupal.comment_delete(123).then(function(data) {
     if (data[0]) {
@@ -122,7 +126,7 @@ drupal.comment_delete(123).then(function(data) {
 });
 ```
 
-## COMMENT INDEX
+### INDEX
 ```
 var query = {
   parameters: {
@@ -139,7 +143,9 @@ drupal.comment_index(query).then(function(comments) {
 });
 ```
 
-## FILE LOAD
+## FILES
+
+### RETRIEVE
 To load a file the user must have the `Get any binary files ` permission in
 Drupal.
 ```
@@ -148,14 +154,9 @@ drupal.file_load(123).then(function(file) {
 });
 ```
 
-## NODE LOAD
-```
-drupal.node_load(123).then(function(node) {
-    alert('Loaded node: ' + node.title);
-});
-```
+## NODES
 
-## NODE SAVE - NEW
+### CREATE
 ```
 var node = {
   type: 'article',
@@ -168,7 +169,14 @@ drupal.node_save(node).then(function(data) {
 });
 ```
 
-## NODE SAVE - EXISTING
+### RETRIEVE
+```
+drupal.node_load(123).then(function(node) {
+    alert('Loaded node: ' + node.title);
+});
+```
+
+### UPDATE
 ```
 var node = {
   nid: 123,
@@ -183,7 +191,7 @@ drupal.node_save(node).then(function(data) {
 });
 ```
 
-## NODE DELETE
+### DELETE
 ```
 drupal.node_delete(123).then(function(data) {
     if (data[0]) {
@@ -192,7 +200,7 @@ drupal.node_delete(123).then(function(data) {
 });
 ```
 
-## NODE INDEX
+### INDEX
 ```
 var query = {
   parameters: {
@@ -209,14 +217,9 @@ drupal.node_index(query).then(function(nodes) {
 });
 ```
 
-## TAXONOMY TERM LOAD
-```
-drupal.taxonomy_term_load(123).then(function(term) {
-    alert('Loaded term: ' + term.name);
-});
-```
+## TAXONOMY TERMS
 
-## TAXONOMY TERM SAVE - NEW
+### CREATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
 var taxonomy_term = {
@@ -230,7 +233,14 @@ drupal.taxonomy_term_save(taxonomy_term).then(function(data) {
 });
 ```
 
-## TAXONOMY TERM SAVE - EXISTING
+### RETRIEVE
+```
+drupal.taxonomy_term_load(123).then(function(term) {
+    alert('Loaded term: ' + term.name);
+});
+```
+
+### UPDATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_UPDATED/7
 var taxonomy_term = {
@@ -245,7 +255,7 @@ drupal.taxonomy_term_save(taxonomy_term).then(function(data) {
 });
 ```
 
-## TAXONOMY TERM DELETE
+### DELETE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_DELETED/7
 drupal.taxonomy_term_delete(123).then(function(data) {
@@ -255,7 +265,7 @@ drupal.taxonomy_term_delete(123).then(function(data) {
 });
 ```
 
-## TAXONOMY TERM INDEX
+### INDEX
 ```
 var query = {
   parameters: {
@@ -272,14 +282,9 @@ drupal.taxonomy_term_index(query).then(function(taxonomy_terms) {
 });
 ```
 
-## TAXONOMY VOCABULARY LOAD
-```
-drupal.taxonomy_vocabulary_load(1).then(function(vocabulary) {
-    alert('Loaded vocabulary: ' + vocabulary.name); 
-});
-```
+## TAXONOMY VOCABULARIES
 
-## TAXONOMY VOCABULARY SAVE - NEW
+### CREATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
 var taxonomy_vocabulary = {
@@ -294,7 +299,14 @@ drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(data) {
 });
 ```
 
-## TAXONOMY VOCABULARY SAVE - EXISTING
+### RETRIEVE
+```
+drupal.taxonomy_vocabulary_load(1).then(function(vocabulary) {
+    alert('Loaded vocabulary: ' + vocabulary.name); 
+});
+```
+
+### UPDATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_UPDATED/7
 var taxonomy_vocabulary = {
@@ -310,7 +322,7 @@ drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(data) {
 });
 ```
 
-## TAXONOMY VOCABULARY DELETE
+### DELETE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_DELETED/7
 drupal.taxonomy_vocabulary_delete(123).then(function(data) {
@@ -320,7 +332,7 @@ drupal.taxonomy_vocabulary_delete(123).then(function(data) {
 });
 ```
 
-## TAXONOMY VOCABULARY INDEX
+### INDEX
 ```
 var query = {
   parameters: {
@@ -337,14 +349,9 @@ drupal.taxonomy_vocabulary_index(query).then(function(taxonomy_vocabularys) {
 });
 ```
 
-## USER LOAD
-```
-drupal.user_load(1).then(function(account) {
-    alert('Loaded user: ' + account.name);
-});
-```
+## USERS
 
-## USER SAVE - NEW
+### CREATE
 To create a new user account, the user must have the `Administer users`
 permission enabled in Drupal.
 ```
@@ -358,7 +365,14 @@ drupal.user_save(account).then(function(data) {
 });
 ```
 
-## USER SAVE - EXISTING
+### RETRIEVE
+```
+drupal.user_load(1).then(function(account) {
+    alert('Loaded user: ' + account.name);
+});
+```
+
+### UPDATE
 To update an existing user account, the user must have the `Change own username`
 or `Administer users` permission enabled in Drupal.
 ```
@@ -371,7 +385,7 @@ drupal.user_save(account).then(function(data) {
 });
 ```
 
-## USER DELETE
+### DELETE
 The user must have the `Administer users` permission to delete a user account.
 ```
 drupal.user_delete(123).then(function(data) {
@@ -381,7 +395,7 @@ drupal.user_delete(123).then(function(data) {
 });
 ```
 
-## USER INDEX
+### INDEX
 ```
 var query = {
   parameters: {
@@ -409,7 +423,7 @@ drupal.token().then(function(token) {
 
 # DISCLAIMER
 I, `Tyler Frankenstein`, admit I am very much a *n00b* when it comes to Angular
-JS. The way this module is currently written is by no means the "Angular" way to
+JS. The way this module is currently written is by no means the *Angular* way to
 do it. Writing this module is my gateway into learning Angular. This module has
 unit test coverage to maintain quality. I very much welcome comments, criticisms
 and contributions for this project. Thank you!
