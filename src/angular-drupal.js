@@ -223,6 +223,32 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
+
+  // TAXONOMY TERM SAVE
+  this.taxonomy_term_save = function(taxonomy_term) {
+    var method = null;
+    var url = null;
+    if (!taxonomy_term.tid) {
+      method = 'POST';
+      url = this.restPath + '/taxonomy_term.json';
+    }
+    else {
+      method = 'PUT';
+      url = this.restPath + '/taxonomy_term/' + taxonomy_term.tid + '.json';
+    }
+    var options = {
+      method: method,
+      url: url,
+      headers: { 'Content-Type': 'application/json' },
+      data: taxonomy_term // don't wrap taxonomy terms
+    };
+    return this.token().then(function(token) {
+        options.headers['X-CSRF-Token'] = token
+        return $http(options).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
   
   // USER SAVE
   this.user_save = function(account) {
@@ -286,6 +312,23 @@ function drupal($http, drupalSettings, drupalToken) {
     });
   };
   
+  // TAXONOMY TERM DELETE
+  this.taxonomy_term_delete = function(tid) {
+    var drupal = this;
+    return this.token().then(function(token) {
+        return $http({
+            method: 'DELETE',
+            url: drupal.restPath + '/taxonomy_term/' + tid + '.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            }
+        }).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
   // USER DELETE
   this.user_delete = function(uid) {
     var drupal = this;
@@ -316,6 +359,14 @@ function drupal($http, drupalSettings, drupalToken) {
   // NODE INDEX
   this.node_index = function(query) {
     var path = this.restPath + '/node.json&' + drupal_entity_index_build_query_string(query);
+    return $http.get(path).then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
+  };
+  
+  // TAXONOMY TERM INDEX
+  this.taxonomy_term_index = function(query) {
+    var path = this.restPath + '/taxonomy_term.json&' + drupal_entity_index_build_query_string(query);
     return $http.get(path).then(function(result) {
         if (result.status == 200) { return result.data; }
     });

@@ -206,6 +206,34 @@ describe('drupal services', function () {
         $httpBackend.flush();
     });
     
+    // TAXONOMY TERM SAVE - NEW
+    it('drupal.taxonomy_term_save() - new', function () {
+        var taxonomy_term = drupal_spec_entity_save_new_response('taxonomy_term');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPOST(restPath + '/taxonomy_term.json').respond(taxonomy_term);
+        drupal.taxonomy_term_save(taxonomy_term).then(function(entity) {
+            var key = drupal_entity_primary_key('taxonomy_term');
+            var title = drupal_entity_primary_key_title('taxonomy_term');
+            expect(entity[key]).not.toBeNull();
+            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('taxonomy_term')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
+    // TAXONOMY TERM SAVE - EXISTING
+    it('drupal.taxonomy_term_save() - existing', function () {
+        var taxonomy_term = drupal_spec_entity_save_existing_response('taxonomy_term');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPUT(restPath + '/taxonomy_term/' + taxonomy_term.tid + '.json').respond(taxonomy_term);
+        drupal.taxonomy_term_save(taxonomy_term).then(function(entity) {
+            var key = drupal_entity_primary_key('taxonomy_term');
+            var title = drupal_entity_primary_key_title('taxonomy_term');
+            expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_term')[key]);
+            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_term')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
     // USER SAVE - NEW
     it('drupal.user_save() - new', function () {
         var user = drupal_spec_entity_save_new_response('user');
@@ -286,6 +314,17 @@ describe('drupal services', function () {
         $httpBackend.expectGET(path).respond(drupal_spec_entity_index_response('node'));
         drupal.node_index(query).then(function(nodes) {
             expect(nodes.length).toEqual(drupal_spec_entity_index_response('node').length);
+        });
+        $httpBackend.flush();
+    });
+    
+    // TAXONOMY TERM INDEX
+    it('drupal.taxonomy_term_index()', function () {
+        var query = drupal_spec_entity_index_query('taxonomy_term');
+        var path = restPath + '/taxonomy_term.json&' + drupal_entity_index_build_query_string(query);
+        $httpBackend.expectGET(path).respond(drupal_spec_entity_index_response('taxonomy_term'));
+        drupal.taxonomy_term_index(query).then(function(taxonomy_terms) {
+            expect(taxonomy_terms.length).toEqual(drupal_spec_entity_index_response('taxonomy_term').length);
         });
         $httpBackend.flush();
     });
@@ -428,6 +467,13 @@ function drupal_spec_entity_index_query(entity_type) {
         query = {
           parameters: {
             'type': 'article'
+          }
+        };
+        break;
+      case 'taxonomy_term':
+        query = {
+          parameters: {
+            'vid': 1
           }
         };
         break;

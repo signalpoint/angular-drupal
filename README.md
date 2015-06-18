@@ -46,7 +46,7 @@ include this service throughout your app using Angular's dependency injection
 mechanism.
 
 The simple app, listed above, injects the `drupal` service into the app's `run`
-function. Then when the app runs it loads node # 123 from Drupal and then
+function. Then when the app runs it loads `node # 123` from Drupal and then
 alerts the node's title.
 
 Notice how we used a `config` function on the `angular-drupal` module in the
@@ -216,6 +216,62 @@ drupal.taxonomy_term_load(123).then(function(term) {
 });
 ```
 
+## TAXONOMY TERM SAVE - NEW
+```
+https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
+var taxonomy_term = {
+  vid: 1,
+  name: 'Hello world'
+};
+drupal.taxonomy_term_save(taxonomy_term).then(function(data) {
+    if (data[0] == 1) { // SAVED_NEW
+      alert('Created taxonomy term.');
+    }
+});
+```
+
+## TAXONOMY TERM SAVE - EXISTING
+```
+// @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_UPDATED/7
+var taxonomy_term = {
+  vid: 1,
+  tid: 123,
+  name: 'Goodbye world'
+};
+drupal.taxonomy_term_save(taxonomy_term).then(function(data) {
+    if (data[0] == 2) { // SAVED_UPDATED
+      alert('Updated taxonomy term.');
+    }
+});
+```
+
+## TAXONOMY TERM DELETE
+```
+// @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_DELETED/7
+drupal.taxonomy_term_delete(123).then(function(data) {
+    if (data[0] == 3) { // SAVED_DELETED
+      alert('Deleted taxonomy term.');
+    }
+});
+```
+
+## TAXONOMY TERM INDEX
+```
+var query = {
+  parameters: {
+    'vid': 1
+  }
+};
+drupal.taxonomy_term_index(query).then(function(taxonomy_terms) {
+    var msg = '';
+    for (var i = 0; i < taxonomy_terms.length; i++) {
+      var taxonomy_term = taxonomy_terms[i];
+      msg += 'Loaded taxonomy term: ' + taxonomy_term.name + '\n';
+    }
+    alert(msg);
+});
+```
+
 ## TAXONOMY VOCABULARY LOAD
 ```
 drupal.taxonomy_vocabulary_load(1).then(function(vocabulary) {
@@ -294,9 +350,9 @@ drupal.token().then(function(token) {
 ```
 
 # DISCLAIMER
-I (Tyler Frankenstein), admit I am very much a n00b when it comes to Angular JS.
-The way this module is currently written is by no means the "Angular" way to do
-it. Writing this module is my gateway into learning Angular. This module has
+I, `Tyler Frankenstein`, admit I am very much a *n00b* when it comes to Angular
+JS. The way this module is currently written is by no means the "Angular" way to
+do it. Writing this module is my gateway into learning Angular. This module has
 unit test coverage to maintain quality. I very much welcome comments, criticisms
 and contributions for this project. Thank you!
 
