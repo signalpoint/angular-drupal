@@ -14,7 +14,7 @@
     "angular",
     "drupal"
   ],
-  "author": "Tyler Frankenstein",
+  "author": "Tyler Frankenstein <tyler.frankenstein@gmail.com> (http://tylerfrankenstein.com/)",
   "license": "GNU",
   "bugs": {
     "url": "https://github.com/easystreet3/angular-drupal/issues"
