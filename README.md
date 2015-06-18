@@ -84,6 +84,132 @@ drupal.user_logout().then(function(data) {
 });
 ```
 
+## NODES
+
+### CREATE
+```
+var node = {
+  type: 'article',
+  title: 'Hello world',
+  language: 'und',
+  body: { und: [ { value: 'How are you?' }] }
+};
+drupal.node_save(node).then(function(data) {
+    alert('Created node: ' + data.nid);
+});
+```
+
+### RETRIEVE
+```
+drupal.node_load(123).then(function(node) {
+    alert('Loaded node: ' + node.title);
+});
+```
+
+### UPDATE
+```
+var node = {
+  nid: 123,
+  title: 'Goodbye world',
+  language: 'und',
+  body: {
+    und: [ { value: 'I am fine, thank you.' }]
+  }
+};
+drupal.node_save(node).then(function(data) {
+    alert('Updated node: ' + data.nid);
+});
+```
+
+### DELETE
+```
+drupal.node_delete(123).then(function(data) {
+    if (data[0]) {
+      alert('Deleted node.');
+    }
+});
+```
+
+### INDEX
+```
+var query = {
+  parameters: {
+    'type': 'article'
+  }
+};
+drupal.node_index(query).then(function(nodes) {
+    var msg = '';
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      msg += 'Loaded node: ' + node.title + '\n';
+    }
+    alert(msg);
+});
+```
+
+## USERS
+
+### CREATE
+To create a new user account, the user must have the `Administer users`
+permission enabled in Drupal.
+```
+var account = {
+  name: 'jane',
+  mail: 'jane@example.com',
+  pass: 'secret-sauce'
+};
+drupal.user_save(account).then(function(data) {
+  alert('Created new user #' + data.uid);
+});
+```
+
+### RETRIEVE
+```
+drupal.user_load(1).then(function(account) {
+    alert('Loaded user: ' + account.name);
+});
+```
+
+### UPDATE
+To update an existing user account, the user must have the `Change own username`
+or `Administer users` permission enabled in Drupal.
+```
+var account = {
+  uid: 123,
+  name: 'john'
+};
+drupal.user_save(account).then(function(data) {
+  alert('Name changed to: ' + data.name);
+});
+```
+
+### DELETE
+The user must have the `Administer users` permission to delete a user account.
+```
+drupal.user_delete(123).then(function(data) {
+    if (data[0]) {
+      alert('Deleted user.');
+    }
+});
+```
+
+### INDEX
+```
+var query = {
+  parameters: {
+    'name': 'bob'
+  }
+};
+drupal.user_index(query).then(function(users) {
+    var msg = '';
+    for (var i = 0; i < users.length; i++) {
+      var user = users[i];
+      msg += 'Loaded user: ' + user.name + '\n';
+    }
+    alert(msg);
+});
+```
+
 ## COMMENTS
 
 ### CREATE
@@ -151,69 +277,6 @@ Drupal.
 ```
 drupal.file_load(123).then(function(file) {
     alert('Loaded file: ' + file.filename);
-});
-```
-
-## NODES
-
-### CREATE
-```
-var node = {
-  type: 'article',
-  title: 'Hello world',
-  language: 'und',
-  body: { und: [ { value: 'How are you?' }] }
-};
-drupal.node_save(node).then(function(data) {
-    alert('Created node: ' + data.nid);
-});
-```
-
-### RETRIEVE
-```
-drupal.node_load(123).then(function(node) {
-    alert('Loaded node: ' + node.title);
-});
-```
-
-### UPDATE
-```
-var node = {
-  nid: 123,
-  title: 'Goodbye world',
-  language: 'und',
-  body: {
-    und: [ { value: 'I am fine, thank you.' }]
-  }
-};
-drupal.node_save(node).then(function(data) {
-    alert('Updated node: ' + data.nid);
-});
-```
-
-### DELETE
-```
-drupal.node_delete(123).then(function(data) {
-    if (data[0]) {
-      alert('Deleted node.');
-    }
-});
-```
-
-### INDEX
-```
-var query = {
-  parameters: {
-    'type': 'article'
-  }
-};
-drupal.node_index(query).then(function(nodes) {
-    var msg = '';
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      msg += 'Loaded node: ' + node.title + '\n';
-    }
-    alert(msg);
 });
 ```
 
@@ -344,69 +407,6 @@ drupal.taxonomy_vocabulary_index(query).then(function(taxonomy_vocabularys) {
     for (var i = 0; i < taxonomy_vocabularys.length; i++) {
       var taxonomy_vocabulary = taxonomy_vocabularys[i];
       msg += 'Loaded taxonomy vocabulary: ' + taxonomy_vocabulary.name + '\n';
-    }
-    alert(msg);
-});
-```
-
-## USERS
-
-### CREATE
-To create a new user account, the user must have the `Administer users`
-permission enabled in Drupal.
-```
-var account = {
-  name: 'jane',
-  mail: 'jane@example.com',
-  pass: 'secret-sauce'
-};
-drupal.user_save(account).then(function(data) {
-  alert('Created new user #' + data.uid);
-});
-```
-
-### RETRIEVE
-```
-drupal.user_load(1).then(function(account) {
-    alert('Loaded user: ' + account.name);
-});
-```
-
-### UPDATE
-To update an existing user account, the user must have the `Change own username`
-or `Administer users` permission enabled in Drupal.
-```
-var account = {
-  uid: 123,
-  name: 'john'
-};
-drupal.user_save(account).then(function(data) {
-  alert('Name changed to: ' + data.name);
-});
-```
-
-### DELETE
-The user must have the `Administer users` permission to delete a user account.
-```
-drupal.user_delete(123).then(function(data) {
-    if (data[0]) {
-      alert('Deleted user.');
-    }
-});
-```
-
-### INDEX
-```
-var query = {
-  parameters: {
-    'name': 'bob'
-  }
-};
-drupal.user_index(query).then(function(users) {
-    var msg = '';
-    for (var i = 0; i < users.length; i++) {
-      var user = users[i];
-      msg += 'Loaded user: ' + user.name + '\n';
     }
     alert(msg);
 });
