@@ -17,7 +17,7 @@ function drupal($http, drupalSettings, drupalToken) {
   var restPath = sitePath + '/?q=' + drupalSettings.endpoint;
   this.sitePath = sitePath;
   this.restPath = restPath;
-  
+
   // @TODO provide a generic ENTITY CRUD layer to support non core entities.
 
   // TOKEN (X-CSRF-Token)
@@ -53,7 +53,7 @@ function drupal($http, drupalSettings, drupalToken) {
         return $http({
           method: 'POST',
           url: restPath + '/system/connect.json',
-          headers: { 'X-CSRF-Token': token } 
+          headers: { 'X-CSRF-Token': token }
         }).then(function(result) {
           if (result.status == 200) { return result.data; }
         });
@@ -75,9 +75,9 @@ function drupal($http, drupalSettings, drupalToken) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         transformRequest: function(obj) {
           var str = [];
-          for(var p in obj)
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-          return str.join("&");
+          for (var p in obj)
+            str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+          return str.join('&');
         },
         data: {
           username: username,
@@ -127,33 +127,33 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // ENTITY LOAD FUNCTIONS
-  
+
   this.comment_load = function(cid) {
     return $http.get(this.restPath + '/comment/' + cid + '.json').then(function(result) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   this.file_load = function(fid) {
     return $http.get(this.restPath + '/file/' + fid + '.json').then(function(result) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   this.node_load = function(nid) {
     return $http.get(this.restPath + '/node/' + nid + '.json').then(function(result) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   this.taxonomy_term_load = function(tid) {
     return $http.get(this.restPath + '/taxonomy_term/' + tid + '.json').then(function(result) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   this.taxonomy_vocabulary_load = function(vid) {
     return $http.get(this.restPath + '/taxonomy_vocabulary/' + vid + '.json').then(function(result) {
         if (result.status == 200) { return result.data; }
@@ -165,9 +165,9 @@ function drupal($http, drupalSettings, drupalToken) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   // ENTITY SAVE FUNCTIONS
-  
+
   // COMMENT SAVE
   this.comment_save = function(comment) {
     var method = null;
@@ -187,13 +187,13 @@ function drupal($http, drupalSettings, drupalToken) {
       data: comment // don't wrap comments
     };
     return this.token().then(function(token) {
-        options.headers['X-CSRF-Token'] = token
+        options.headers['X-CSRF-Token'] = token;
         return $http(options).then(function(result) {
             if (result.status == 200) { return result.data; }
         });
     });
   };
-  
+
   // FILE SAVE
   this.file_save = function(file) {
     var options = {
@@ -203,13 +203,13 @@ function drupal($http, drupalSettings, drupalToken) {
       data: { file: file } // wrap files
     };
     return this.token().then(function(token) {
-        options.headers['X-CSRF-Token'] = token
+        options.headers['X-CSRF-Token'] = token;
         return $http(options).then(function(result) {
             if (result.status == 200) { return result.data; }
         });
     });
   };
-  
+
   // NODE SAVE
   this.node_save = function(node) {
     var method = null;
@@ -229,7 +229,7 @@ function drupal($http, drupalSettings, drupalToken) {
       data: { node: node } // wrap nodes
     };
     return this.token().then(function(token) {
-        options.headers['X-CSRF-Token'] = token
+        options.headers['X-CSRF-Token'] = token;
         return $http(options).then(function(result) {
             if (result.status == 200) { return result.data; }
         });
@@ -255,13 +255,13 @@ function drupal($http, drupalSettings, drupalToken) {
       data: taxonomy_term // don't wrap taxonomy terms
     };
     return this.token().then(function(token) {
-        options.headers['X-CSRF-Token'] = token
+        options.headers['X-CSRF-Token'] = token;
         return $http(options).then(function(result) {
             if (result.status == 200) { return result.data; }
         });
     });
   };
-  
+
   // TAXONOMY VOCABULARY SAVE
   this.taxonomy_vocabulary_save = function(taxonomy_vocabulary) {
     var method = null;
@@ -281,13 +281,13 @@ function drupal($http, drupalSettings, drupalToken) {
       data: taxonomy_vocabulary // don't wrap taxonomy vocabularys
     };
     return this.token().then(function(token) {
-        options.headers['X-CSRF-Token'] = token
+        options.headers['X-CSRF-Token'] = token;
         return $http(options).then(function(result) {
             if (result.status == 200) { return result.data; }
         });
     });
   };
-  
+
   // USER SAVE
   this.user_save = function(account) {
     var method = null;
@@ -307,15 +307,15 @@ function drupal($http, drupalSettings, drupalToken) {
       data: account // don't wrap users
     };
     return this.token().then(function(token) {
-        options.headers['X-CSRF-Token'] = token
+        options.headers['X-CSRF-Token'] = token;
         return $http(options).then(function(result) {
             if (result.status == 200) { return result.data; }
         });
     });
   };
-  
+
   // ENTITY DELETE FUNCTIONS
-  
+
   // COMMENT DELETE
   this.comment_delete = function(cid) {
     var drupal = this;
@@ -332,7 +332,7 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // NODE DELETE
   this.node_delete = function(nid) {
     var drupal = this;
@@ -349,7 +349,7 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // TAXONOMY TERM DELETE
   this.taxonomy_term_delete = function(tid) {
     var drupal = this;
@@ -366,7 +366,7 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // TAXONOMY VOCABULARY DELETE
   this.taxonomy_vocabulary_delete = function(vid) {
     var drupal = this;
@@ -383,7 +383,7 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // USER DELETE
   this.user_delete = function(uid) {
     var drupal = this;
@@ -400,9 +400,9 @@ function drupal($http, drupalSettings, drupalToken) {
         });
     });
   };
-  
+
   // ENTITY INDEX FUNCTIONS
-  
+
   // COMMENT INDEX
   this.comment_index = function(query) {
     var path = this.restPath + '/comment.json&' + drupal_entity_index_build_query_string(query);
@@ -410,7 +410,7 @@ function drupal($http, drupalSettings, drupalToken) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   // NODE INDEX
   this.node_index = function(query) {
     var path = this.restPath + '/node.json&' + drupal_entity_index_build_query_string(query);
@@ -418,7 +418,7 @@ function drupal($http, drupalSettings, drupalToken) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   // TAXONOMY TERM INDEX
   this.taxonomy_term_index = function(query) {
     var path = this.restPath + '/taxonomy_term.json&' + drupal_entity_index_build_query_string(query);
@@ -426,7 +426,7 @@ function drupal($http, drupalSettings, drupalToken) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   // TAXONOMY VOCABULARY INDEX
   this.taxonomy_vocabulary_index = function(query) {
     var path = this.restPath + '/taxonomy_vocabulary.json&' + drupal_entity_index_build_query_string(query);
@@ -434,7 +434,7 @@ function drupal($http, drupalSettings, drupalToken) {
         if (result.status == 200) { return result.data; }
     });
   };
-  
+
   // USER INDEX
   this.user_index = function(query) {
     var path = this.restPath + '/user.json&' + drupal_entity_index_build_query_string(query);
