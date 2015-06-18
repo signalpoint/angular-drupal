@@ -218,7 +218,7 @@ drupal.taxonomy_term_load(123).then(function(term) {
 
 ## TAXONOMY TERM SAVE - NEW
 ```
-https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
+// @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
 var taxonomy_term = {
   vid: 1,
   name: 'Hello world'
@@ -276,6 +276,64 @@ drupal.taxonomy_term_index(query).then(function(taxonomy_terms) {
 ```
 drupal.taxonomy_vocabulary_load(1).then(function(vocabulary) {
     alert('Loaded vocabulary: ' + vocabulary.name); 
+});
+```
+
+## TAXONOMY VOCABULARY SAVE - NEW
+```
+// @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
+var taxonomy_vocabulary = {
+  name: 'Fruits',
+  machine_name: 'fruits',
+  description: 'Fruit is delicious.'
+};
+drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(data) {
+    if (data[0] == 1) { // SAVED_NEW
+      alert('Created taxonomy vocabulary.');
+    }
+});
+```
+
+## TAXONOMY VOCABULARY SAVE - EXISTING
+```
+// @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_UPDATED/7
+var taxonomy_vocabulary = {
+  vid: 2,
+  name: 'Colorful Fruits',
+  machine_name: 'fruits',
+  description: 'Colorful fruit is even more delicious.'
+};
+drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(data) {
+    if (data[0] == 2) { // SAVED_UPDATED
+      alert('Updated taxonomy vocabulary.');
+    }
+});
+```
+
+## TAXONOMY VOCABULARY DELETE
+```
+// @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_DELETED/7
+drupal.taxonomy_vocabulary_delete(123).then(function(data) {
+    if (data[0] == 3) { // SAVED_DELETED
+      alert('Deleted taxonomy vocabulary.');
+    }
+});
+```
+
+## TAXONOMY VOCABULARY INDEX
+```
+var query = {
+  parameters: {
+    'name': 'tags'
+  }
+};
+drupal.taxonomy_vocabulary_index(query).then(function(taxonomy_vocabularys) {
+    var msg = '';
+    for (var i = 0; i < taxonomy_vocabularys.length; i++) {
+      var taxonomy_vocabulary = taxonomy_vocabularys[i];
+      msg += 'Loaded taxonomy vocabulary: ' + taxonomy_vocabulary.name + '\n';
+    }
+    alert(msg);
 });
 ```
 

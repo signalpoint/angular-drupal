@@ -250,6 +250,32 @@ function drupal($http, drupalSettings, drupalToken) {
     });
   };
   
+  // TAXONOMY VOCABULARY SAVE
+  this.taxonomy_vocabulary_save = function(taxonomy_vocabulary) {
+    var method = null;
+    var url = null;
+    if (!taxonomy_vocabulary.vid) {
+      method = 'POST';
+      url = this.restPath + '/taxonomy_vocabulary.json';
+    }
+    else {
+      method = 'PUT';
+      url = this.restPath + '/taxonomy_vocabulary/' + taxonomy_vocabulary.vid + '.json';
+    }
+    var options = {
+      method: method,
+      url: url,
+      headers: { 'Content-Type': 'application/json' },
+      data: taxonomy_vocabulary // don't wrap taxonomy vocabularys
+    };
+    return this.token().then(function(token) {
+        options.headers['X-CSRF-Token'] = token
+        return $http(options).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
   // USER SAVE
   this.user_save = function(account) {
     var method = null;
@@ -329,6 +355,23 @@ function drupal($http, drupalSettings, drupalToken) {
     });
   };
   
+  // TAXONOMY VOCABULARY DELETE
+  this.taxonomy_vocabulary_delete = function(vid) {
+    var drupal = this;
+    return this.token().then(function(token) {
+        return $http({
+            method: 'DELETE',
+            url: drupal.restPath + '/taxonomy_vocabulary/' + vid + '.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            }
+        }).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
   // USER DELETE
   this.user_delete = function(uid) {
     var drupal = this;
@@ -367,6 +410,14 @@ function drupal($http, drupalSettings, drupalToken) {
   // TAXONOMY TERM INDEX
   this.taxonomy_term_index = function(query) {
     var path = this.restPath + '/taxonomy_term.json&' + drupal_entity_index_build_query_string(query);
+    return $http.get(path).then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
+  };
+  
+  // TAXONOMY VOCABULARY INDEX
+  this.taxonomy_vocabulary_index = function(query) {
+    var path = this.restPath + '/taxonomy_vocabulary.json&' + drupal_entity_index_build_query_string(query);
     return $http.get(path).then(function(result) {
         if (result.status == 200) { return result.data; }
     });

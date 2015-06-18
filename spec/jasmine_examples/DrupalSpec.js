@@ -234,6 +234,34 @@ describe('drupal services', function () {
         $httpBackend.flush();
     });
     
+    // TAXONOMY VOCABULARY SAVE - NEW
+    it('drupal.taxonomy_vocabulary_save() - new', function () {
+        var taxonomy_vocabulary = drupal_spec_entity_save_new_response('taxonomy_vocabulary');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPOST(restPath + '/taxonomy_vocabulary.json').respond(taxonomy_vocabulary);
+        drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(entity) {
+            var key = drupal_entity_primary_key('taxonomy_vocabulary');
+            var title = drupal_entity_primary_key_title('taxonomy_vocabulary');
+            expect(entity[key]).not.toBeNull();
+            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('taxonomy_vocabulary')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
+    // TAXONOMY VOCABULARY SAVE - EXISTING
+    it('drupal.taxonomy_vocabulary_save() - existing', function () {
+        var taxonomy_vocabulary = drupal_spec_entity_save_existing_response('taxonomy_vocabulary');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPUT(restPath + '/taxonomy_vocabulary/' + taxonomy_vocabulary.vid + '.json').respond(taxonomy_vocabulary);
+        drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(entity) {
+            var key = drupal_entity_primary_key('taxonomy_vocabulary');
+            var title = drupal_entity_primary_key_title('taxonomy_vocabulary');
+            expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_vocabulary')[key]);
+            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_vocabulary')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
     // USER SAVE - NEW
     it('drupal.user_save() - new', function () {
         var user = drupal_spec_entity_save_new_response('user');
@@ -284,6 +312,26 @@ describe('drupal services', function () {
         $httpBackend.flush();
     });
     
+    // TAXONOMY TERM DELETE
+    it('drupal.taxonomy_term_delete()', function () {
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectDELETE(restPath + '/taxonomy_term/123.json').respond(drupal_spec_entity_delete_response('taxonomy_term'));
+        drupal.taxonomy_term_delete(123).then(function(data) {
+            expect(data[0]).toEqual(drupal_spec_entity_delete_response('taxonomy_term')[0]);
+        });
+        $httpBackend.flush();
+    });
+    
+    // TAXONOMY VOCABULARY DELETE
+    it('drupal.taxonomy_vocabulary_delete()', function () {
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectDELETE(restPath + '/taxonomy_vocabulary/123.json').respond(drupal_spec_entity_delete_response('taxonomy_vocabulary'));
+        drupal.taxonomy_vocabulary_delete(123).then(function(data) {
+            expect(data[0]).toEqual(drupal_spec_entity_delete_response('taxonomy_vocabulary')[0]);
+        });
+        $httpBackend.flush();
+    });
+    
     // USER DELETE
     it('drupal.user_delete()', function () {
         $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
@@ -325,6 +373,17 @@ describe('drupal services', function () {
         $httpBackend.expectGET(path).respond(drupal_spec_entity_index_response('taxonomy_term'));
         drupal.taxonomy_term_index(query).then(function(taxonomy_terms) {
             expect(taxonomy_terms.length).toEqual(drupal_spec_entity_index_response('taxonomy_term').length);
+        });
+        $httpBackend.flush();
+    });
+    
+    // TAXONOMY VOCABULARY INDEX
+    it('drupal.taxonomy_vocabulary_index()', function () {
+        var query = drupal_spec_entity_index_query('taxonomy_vocabulary');
+        var path = restPath + '/taxonomy_vocabulary.json&' + drupal_entity_index_build_query_string(query);
+        $httpBackend.expectGET(path).respond(drupal_spec_entity_index_response('taxonomy_vocabulary'));
+        drupal.taxonomy_vocabulary_index(query).then(function(taxonomy_vocabularys) {
+            expect(taxonomy_vocabularys.length).toEqual(drupal_spec_entity_index_response('taxonomy_vocabulary').length);
         });
         $httpBackend.flush();
     });
@@ -474,6 +533,13 @@ function drupal_spec_entity_index_query(entity_type) {
         query = {
           parameters: {
             'vid': 1
+          }
+        };
+        break;
+      case 'taxonomy_vocabulary':
+        query = {
+          parameters: {
+            'name': 'tags'
           }
         };
         break;
