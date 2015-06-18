@@ -150,6 +150,34 @@ describe('drupal services', function () {
     
     // ENTITY SAVE FUNCTIONS
     
+    // COMMENT SAVE - NEW
+    it('drupal.comment_save() - new', function () {
+        var comment = drupal_spec_entity_save_new_response('comment');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPOST(restPath + '/comment.json').respond(comment);
+        drupal.comment_save(comment).then(function(entity) {
+            var key = drupal_entity_primary_key('comment');
+            var title = drupal_entity_primary_key_title('comment');
+            expect(entity[key]).not.toBeNull();
+            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('comment')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
+    // COMMENT SAVE - EXISTING
+    it('drupal.comment_save() - existing', function () {
+        var comment = drupal_spec_entity_save_existing_response('comment');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPUT(restPath + '/comment/' + comment.cid + '.json').respond(comment);
+        drupal.comment_save(comment).then(function(entity) {
+            var key = drupal_entity_primary_key('comment');
+            var title = drupal_entity_primary_key_title('comment');
+            expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('comment')[key]);
+            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('comment')[title]);
+        });
+        $httpBackend.flush();
+    });
+    
     // NODE SAVE - NEW
     it('drupal.node_save() - new', function () {
         var node = drupal_spec_entity_save_new_response('node');
@@ -208,6 +236,16 @@ describe('drupal services', function () {
     
     // ENTITY DELETE FUNCTIONS
     
+    // COMMENT DELETE
+    it('drupal.comment_delete()', function () {
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectDELETE(restPath + '/comment/123.json').respond(drupal_spec_entity_delete_response('comment'));
+        drupal.comment_delete(123).then(function(data) {
+            expect(data[0]).toEqual(drupal_spec_entity_delete_response('comment')[0]);
+        });
+        $httpBackend.flush();
+    });
+    
     // NODE DELETE
     it('drupal.node_delete()', function () {
         $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
@@ -229,6 +267,17 @@ describe('drupal services', function () {
     });
     
     // ENTITY INDEX FUNCTIONS
+    
+    // COMMENT INDEX
+    it('drupal.comment_index()', function () {
+        var query = drupal_spec_entity_index_query('comment');
+        var path = restPath + '/comment.json&' + drupal_entity_index_build_query_string(query);
+        $httpBackend.expectGET(path).respond(drupal_spec_entity_index_response('comment'));
+        drupal.comment_index(query).then(function(comments) {
+            expect(comments.length).toEqual(drupal_spec_entity_index_response('comment').length);
+        });
+        $httpBackend.flush();
+    });
     
     // NODE INDEX
     it('drupal.node_index()', function () {
@@ -325,10 +374,13 @@ function drupal_spec_entity_save_new_response(entity_type) {
     var entity = {};
     entity[drupal_entity_primary_key_title(entity_type)] = 'Hello world';
     switch (entity_type) {
-    case 'node':
-      entity.type = 'article';
-      entity.language = 'und';
-      break;
+      case 'comment':
+        entity.nid = 123;
+        break;
+      case 'node':
+        entity.type = 'article';
+        entity.language = 'und';
+        break;
     }
     return entity;
   }
@@ -363,14 +415,26 @@ function drupal_spec_entity_delete_response(entity_type) {
  */
 function drupal_spec_entity_index_query(entity_type) {
   try {
-    var query = null;
+    var query = { };
     switch (entity_type) {
+      case 'comment':
+        query = {
+          parameters: {
+            'nid': 123
+          }
+        };
+        break;
       case 'node':
         query = {
           parameters: {
             'type': 'article'
           }
         };
+        break;
+      case 'user':
+        break;
+      default:
+        console.log('drupal_spec_entity_index_query - unsupported entity type: ' + entity_type);
         break;
     }
     return query;

@@ -89,6 +89,56 @@ drupal.comment_load(123).then(function(comment) {
 });
 ```
 
+## COMMENT SAVE - NEW
+```
+var comment = {
+  nid: 123,
+  subject: 'Hello world',
+  comment_body: { und: [ { value: 'How are you?' } ] }
+};
+drupal.comment_save(comment).then(function(data) {
+    alert('Created comment: ' + data.cid);
+});
+```
+
+## COMMENT SAVE - EXISTING
+```
+var comment = {
+  cid: 456,
+  subject: 'Goodbye world',
+  comment_body: { und: [ { value: 'I am fine, thank you.' }] }
+};
+drupal.comment_save(comment).then(function(data) {
+    alert('Updated comment: ' + data.cid);
+});
+```
+
+## COMMENT DELETE
+```
+drupal.comment_delete(123).then(function(data) {
+    if (data[0]) {
+      alert('Deleted comment.');
+    }
+});
+```
+
+## COMMENT INDEX
+```
+var query = {
+  parameters: {
+    'nid': 123
+  }
+};
+drupal.comment_index(query).then(function(comments) {
+    var msg = '';
+    for (var i = 0; i < comments.length; i++) {
+      var comment = comments[i];
+      msg += 'Loaded comment: ' + comment.subject + '\n';
+    }
+    alert(msg);
+});
+```
+
 ## FILE LOAD
 To load a file the user must have the `Get any binary files ` permission in
 Drupal.

@@ -17,6 +17,8 @@ function drupal($http, drupalSettings, drupalToken) {
   var restPath = sitePath + '/?q=' + drupalSettings.endpoint;
   this.sitePath = sitePath;
   this.restPath = restPath;
+  
+  // @TODO provide a generic ENTITY CRUD layer to support non core entities.
 
   // TOKEN (X-CSRF-Token)
   this.token = function() {
@@ -170,7 +172,33 @@ function drupal($http, drupalSettings, drupalToken) {
   
   // ENTITY SAVE FUNCTIONS
   
-  // NODE SAVE  
+  // COMMENT SAVE
+  this.comment_save = function(comment) {
+    var method = null;
+    var url = null;
+    if (!comment.cid) {
+      method = 'POST';
+      url = this.restPath + '/comment.json';
+    }
+    else {
+      method = 'PUT';
+      url = this.restPath + '/comment/' + comment.cid + '.json';
+    }
+    var options = {
+      method: method,
+      url: url,
+      headers: { 'Content-Type': 'application/json' },
+      data: comment // don't wrap comments
+    };
+    return this.token().then(function(token) {
+        options.headers['X-CSRF-Token'] = token
+        return $http(options).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
+  // NODE SAVE
   this.node_save = function(node) {
     var method = null;
     var url = null;
@@ -196,7 +224,7 @@ function drupal($http, drupalSettings, drupalToken) {
     });
   };
   
-  // USER SAVE  
+  // USER SAVE
   this.user_save = function(account) {
     var method = null;
     var url = null;
@@ -224,7 +252,24 @@ function drupal($http, drupalSettings, drupalToken) {
   
   // ENTITY DELETE FUNCTIONS
   
-  // NODE DELETE  
+  // COMMENT DELETE
+  this.comment_delete = function(cid) {
+    var drupal = this;
+    return this.token().then(function(token) {
+        return $http({
+            method: 'DELETE',
+            url: drupal.restPath + '/comment/' + cid + '.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            }
+        }).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
+  // NODE DELETE
   this.node_delete = function(nid) {
     var drupal = this;
     return this.token().then(function(token) {
@@ -241,7 +286,7 @@ function drupal($http, drupalSettings, drupalToken) {
     });
   };
   
-  // USER DELETE  
+  // USER DELETE
   this.user_delete = function(uid) {
     var drupal = this;
     return this.token().then(function(token) {
@@ -259,6 +304,14 @@ function drupal($http, drupalSettings, drupalToken) {
   };
   
   // ENTITY INDEX FUNCTIONS
+  
+  // COMMENT INDEX
+  this.comment_index = function(query) {
+    var path = this.restPath + '/comment.json&' + drupal_entity_index_build_query_string(query);
+    return $http.get(path).then(function(result) {
+        if (result.status == 200) { return result.data; }
+    });
+  };
   
   // NODE INDEX
   this.node_index = function(query) {
