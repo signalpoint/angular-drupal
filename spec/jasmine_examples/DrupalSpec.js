@@ -189,6 +189,20 @@ describe('drupal services', function () {
         $httpBackend.flush();
     });
     
+    // FILE SAVE - NEW
+    it('drupal.file_save() - new', function () {
+        var file = drupal_spec_entity_save_new_response('file');
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPOST(restPath + '/file.json').respond(file);
+        drupal.file_save(file).then(function(entity) {
+            var key = drupal_entity_primary_key('file');
+            var title = drupal_entity_primary_key_title('file');
+            expect(entity[key]).not.toBeNull();
+            expect(entity.uri).not.toBeNull();
+        });
+        $httpBackend.flush();
+    });
+    
     // NODE SAVE - NEW
     it('drupal.node_save() - new', function () {
         var node = drupal_spec_entity_save_new_response('node');
@@ -198,7 +212,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('node');
             var title = drupal_entity_primary_key_title('node');
             expect(entity[key]).not.toBeNull();
-            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('node')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });
@@ -212,7 +226,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('node');
             var title = drupal_entity_primary_key_title('node');
             expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('node')[key]);
-            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('node')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });
@@ -226,7 +240,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('taxonomy_term');
             var title = drupal_entity_primary_key_title('taxonomy_term');
             expect(entity[key]).not.toBeNull();
-            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('taxonomy_term')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });
@@ -240,7 +254,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('taxonomy_term');
             var title = drupal_entity_primary_key_title('taxonomy_term');
             expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_term')[key]);
-            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_term')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });
@@ -254,7 +268,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('taxonomy_vocabulary');
             var title = drupal_entity_primary_key_title('taxonomy_vocabulary');
             expect(entity[key]).not.toBeNull();
-            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('taxonomy_vocabulary')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });
@@ -268,7 +282,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('taxonomy_vocabulary');
             var title = drupal_entity_primary_key_title('taxonomy_vocabulary');
             expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_vocabulary')[key]);
-            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('taxonomy_vocabulary')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });
@@ -282,7 +296,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('user');
             var title = drupal_entity_primary_key_title('user');
             expect(entity[key]).not.toBeNull();
-            expect(entity[title]).toEqual(drupal_spec_entity_save_new_response('user')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });
@@ -296,7 +310,7 @@ describe('drupal services', function () {
             var key = drupal_entity_primary_key('user');
             var title = drupal_entity_primary_key_title('user');
             expect(entity[key]).toEqual(drupal_spec_entity_save_existing_response('user')[key]);
-            expect(entity[title]).toEqual(drupal_spec_entity_save_existing_response('user')[title]);
+            expect(entity.uri).not.toBeNull();
         });
         $httpBackend.flush();
     });

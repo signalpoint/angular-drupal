@@ -71,7 +71,7 @@ drupal.connect().then(function(data) {
 var account = {
   name: 'bob',
   mail: 'bob@example.com',
-  pass: 'secret-sauce'
+  pass: 'secret'
 };
 drupal.user_register(account).then(function(data) {
     alert('Registered user # ' + data.uid);
@@ -282,6 +282,19 @@ drupal.comment_index(query).then(function(comments) {
 ```
 
 ## FILES
+
+### CREATE
+```
+var base_64_encoded_image = 'abc...xyz';
+var file = {
+  file: base_64_encoded_image,
+  filename: 'my_image.jpg',
+  filepath: 'public://my_image.jpg'
+};
+drupal.file_save(file).then(function(data) {
+    alert('Saved file # ' + data.fid);
+});
+```
 
 ### RETRIEVE
 To load a file the user must have the `Get any binary files ` permission in

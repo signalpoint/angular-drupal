@@ -194,6 +194,22 @@ function drupal($http, drupalSettings, drupalToken) {
     });
   };
   
+  // FILE SAVE
+  this.file_save = function(file) {
+    var options = {
+      method: 'POST',
+      url: this.restPath + '/file.json',
+      headers: { 'Content-Type': 'application/json' },
+      data: { file: file } // wrap files
+    };
+    return this.token().then(function(token) {
+        options.headers['X-CSRF-Token'] = token
+        return $http(options).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
+  
   // NODE SAVE
   this.node_save = function(node) {
     var method = null;
