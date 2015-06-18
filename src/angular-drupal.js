@@ -108,29 +108,25 @@ function drupal($http, drupalSettings, drupalToken) {
   };
 
   // USER REGISTER
-  /*this.user_register = function(account) {
-
-    var options = {
-      method: 'POST',
-      url: this.restPath + '/user/register.json',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: { account: account }
-    };
-    if (!Drupal.sessid) {
-      // @TODO this is returning the token instead of the user registration
-      // result, learn how to use promises...?
-      return $http.get(this.sitePath + '/?q=services/session/token').success(function(token) {
-          Drupal.sessid = token;
-          options.headers['X-CSRF-Token'] = token;
-          return $http(options);
-      });
-    }
-    options.headers['X-CSRF-Token'] = Drupal.sessid;
-    return $http(options);
-    
-  };*/
+  this.user_register = function(account) {
+    var drupal = this;
+    return this.token().then(function(token) {
+        return $http({
+            method: 'POST',
+            url: restPath + '/user/register.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            },
+            data: { account: account }
+        }).then(function(result) {
+          return result.data;
+          this.drupal.drupalUser = drupal_user_defaults();
+          this.drupal.drupalToken = null;
+          return drupal.connect();
+        });
+    });
+  };
   
   // ENTITY LOAD FUNCTIONS
   

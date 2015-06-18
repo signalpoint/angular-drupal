@@ -34,30 +34,41 @@ describe('drupal services', function () {
     // SYSTEM CONNECT
     it('drupal.connect() - anonymous', function () {
         $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
-        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_anonymous());
+        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_anonymous_response());
         drupal.connect().then(function(data) {
-            expect(data.user.uid).toEqual(drupal_spec_connect_anonymous().user.uid);
+            expect(data.user.uid).toEqual(drupal_spec_connect_anonymous_response().user.uid);
         });
         $httpBackend.flush();
     });
     it('drupal.connect() - authenticated', function () {
         $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
-        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_authenticated());
+        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_authenticated_response());
         drupal.connect().then(function(data) {
-            expect(data.user.uid).toEqual(drupal_spec_connect_authenticated().user.uid);
-            expect(data.user.name).toEqual(drupal_spec_connect_authenticated().user.name);
+            expect(data.user.uid).toEqual(drupal_spec_connect_authenticated_response().user.uid);
+            expect(data.user.name).toEqual(drupal_spec_connect_authenticated_response().user.name);
+        });
+        $httpBackend.flush();
+    });
+    
+    // USER REGISTER
+    it('drupal.user_register()', function () {
+        $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
+        $httpBackend.expectPOST(restPath + '/user/register.json').respond(drupal_spec_user_register_response());
+        drupal.user_register({ name: 'bob', mail: 'bob@hotmail.com', pass: 'secret-sauce'}).then(function(data) {
+            expect(data.uid).toEqual(drupal_spec_user_register_response().uid);
+            expect(data.uri).toEqual(drupal_spec_user_register_response().uri);
         });
         $httpBackend.flush();
     });
 
     // USER LOGIN
     it('drupal.user_login()', function () {
-        $httpBackend.expectPOST(restPath + '/user/login.json').respond(drupal_spec_connect_authenticated());
+        $httpBackend.expectPOST(restPath + '/user/login.json').respond(drupal_spec_connect_authenticated_response());
         $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
-        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_authenticated());
+        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_authenticated_response());
         drupal.user_login('bob', 'secret').then(function(data) {
-            expect(data.user.uid).toEqual(drupal_spec_connect_authenticated().user.uid);
-            expect(data.user.name).toEqual(drupal_spec_connect_authenticated().user.name);
+            expect(data.user.uid).toEqual(drupal_spec_connect_authenticated_response().user.uid);
+            expect(data.user.name).toEqual(drupal_spec_connect_authenticated_response().user.name);
         });
         $httpBackend.flush();
     });
@@ -65,11 +76,11 @@ describe('drupal services', function () {
     // USER LOGOUT
     it('drupal.user_logout()', function () {
         $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
-        $httpBackend.expectPOST(restPath + '/user/logout.json').respond(drupal_spec_connect_anonymous());
+        $httpBackend.expectPOST(restPath + '/user/logout.json').respond(drupal_spec_connect_anonymous_response());
         $httpBackend.expectGET(drupal_spec_token_url()).respond(drupal_spec_token());
-        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_anonymous());
+        $httpBackend.expectPOST(restPath + '/system/connect.json').respond(drupal_spec_connect_anonymous_response());
         drupal.user_logout().then(function(data) {
-            expect(data.user.uid).toEqual(drupal_spec_connect_anonymous().user.uid);
+            expect(data.user.uid).toEqual(drupal_spec_connect_anonymous_response().user.uid);
         });
         $httpBackend.flush();
     });
@@ -424,7 +435,7 @@ function drupal_spec_token_url() {
 /**
  *
  */
-function drupal_spec_connect_anonymous() {
+function drupal_spec_connect_anonymous_response() {
   try {
     return {
       user: {
@@ -432,13 +443,13 @@ function drupal_spec_connect_anonymous() {
       }
     };
   }
-  catch (error) { console.log('drupal_spec_connect_anonymous - ' + error); }
+  catch (error) { console.log('drupal_spec_connect_anonymous_response - ' + error); }
 }
 
 /**
  *
  */
-function drupal_spec_connect_authenticated() {
+function drupal_spec_connect_authenticated_response() {
   try {
     return {
       user: {
@@ -447,9 +458,21 @@ function drupal_spec_connect_authenticated() {
       }
     };
   }
-  catch (error) { console.log('drupal_spec_connect_authenticated - ' + error); }
+  catch (error) { console.log('drupal_spec_connect_authenticated_response - ' + error); }
 }
 
+/**
+ *
+ */
+function drupal_spec_user_register_response() {
+  try {
+    return {
+      uid: 2,
+      uri: 'http://localhost/drupal-7/drupalgap/user/2'
+    }
+  }
+  catch (error) { console.log('drupal_spec_user_register_response - ' + error); }
+}
 
 /**
  *

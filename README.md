@@ -66,6 +66,18 @@ drupal.connect().then(function(data) {
 });
 ```
 
+### USER REGISTRATION
+```
+var account = {
+  name: 'bob',
+  mail: 'bob@example.com',
+  pass: 'secret-sauce'
+};
+drupal.user_register(account).then(function(data) {
+    alert('Registered user # ' + data.uid);
+});
+```
+
 ### USER LOGIN
 ```
 drupal.user_login('bob', 'secret').then(function(data) {
