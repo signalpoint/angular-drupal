@@ -7,7 +7,7 @@ An Angular module for Drupal Services.
 This Angular module makes it easy to `read/write` entity data `to/from` Drupal,
 as well as handling user authentication and registration.
 
-Here's a very *simple* Angular app that loads node # 123 from Drupal and then
+Here's a very *simple* Angular app that loads `node # 123` from Drupal and then
 displays the node's title (via an `alert`):
 
 ```
