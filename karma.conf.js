@@ -21,7 +21,7 @@ module.exports = function(config) {
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-drupal/angular-drupal.js',
       'src/*.js',
-      'spec/jasmine_examples/DrupalSpec.js'
+      'tests/DrupalSpec.js'
     ],
 
 
