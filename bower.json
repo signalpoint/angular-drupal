@@ -1,11 +1,11 @@
 {
   "name": "angular-drupal",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/easystreet3/angular-drupal",
   "authors": [
     "Tyler Frankenstein <tyler.frankenstein@gmail.com>"
   ],
-  "description": "An Angular module for Drupal RESTful Services.",
+  "description": "An Angular JS module for Drupal 7 Services.",
   "keywords": [
     "angular",
     "drupal"
@@ -19,9 +19,12 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "1.3.x",
-    "angular-mocks": "1.3.x",
-    "angular-route": "1.3.x",
-    "angular-resource": "1.3.x"
+    "angular": "~1.4.x",
+    "angular-mocks": "~1.4.x",
+    "angular-route": "~1.4.x",
+    "angular-resource": "~1.4.x"
+  },
+  "resolutions": {
+    "angular": "~1.4.x"
   }
 }
