@@ -2,7 +2,7 @@
  * The angular-drupal module.
  */
 angular.module('angular-drupal', []).
-  service('drupal', ['$http', 'drupalSettings', drupal]).
+  service('drupal', ['$http', '$q', 'drupalSettings', drupal]).
   value('drupalSettings', null).
   value('drupalToken', null).
   value('drupalUser', null);
@@ -10,7 +10,7 @@ angular.module('angular-drupal', []).
 /**
  * The drupal service for the angular-drupal module.
  */
-function drupal($http, drupalSettings, drupalToken) {
+function drupal($http, $q, drupalSettings, drupalToken) {
 
   // GLOBALS
   var sitePath = drupalSettings.sitePath;
@@ -29,12 +29,20 @@ function drupal($http, drupalSettings, drupalToken) {
     if (typeof this.drupal !== 'undefined') {
       if (this.drupal.drupalToken) {
         console.log('grabbed token from "this" memory: ' + drupalToken);
-        return this.drupal.drupalToken;
+        return $q(function(resolve, reject) {
+          setTimeout(function() {
+              resolve(this.drupal.drupalToken);
+          }, 100);
+        });
       }
     }
     else if (drupalToken) {
       console.log('grabbed token from memory: ' + drupalToken);
-      return drupalToken;
+      return $q(function(resolve, reject) {
+        setTimeout(function() {
+            resolve(drupalToken);
+        }, 100);
+      });
     }
     return $http.get(sitePath + '/?q=services/session/token').then(function(result) {
         if (result.status == 200) {
@@ -100,6 +108,9 @@ function drupal($http, drupalSettings, drupalToken) {
             url: restPath + '/user/logout.json',
             headers: { 'X-CSRF-Token': token }
         }).then(function(result) {
+          /*if (typeof drupalToken !== 'undefined') {
+            drupalToken = null;
+          }*/
           this.drupal.drupalUser = drupal_user_defaults();
           this.drupal.drupalToken = null;
           return drupal.connect();
@@ -606,9 +617,13 @@ function drupal_entity_index_build_query_string(query) {
 function drupal_user_defaults() {
   try {
     return {
-      uid: '0',
-      roles: {'1': 'anonymous user'},
-      permissions: []
+      "uid": 0,
+      "hostname": null,
+      "roles": {
+          "1": "anonymous user"
+      },
+      "cache": 0,
+      "timestamp": Date.now() / 1000 | 0
     };
   }
   catch (error) { console.log('drupal_user_defaults - ' + error); }
