@@ -1,6 +1,6 @@
 # angular-drupal
 
-An Angular module for Drupal Services.
+An Angular JS module for Drupal 7 Services.
 
 # Intro
 
@@ -31,7 +31,61 @@ angular.module('angular-drupal').config(function($provide) {
 });
 ```
 
-# Setup and Configuration
+# Installation and Setup
+
+There are two main parts to the installation and usage of this module. First you
+need to install the *Drupal Services* module, then include the *angular-drupal*
+module in your Angular JS application.
+
+## 1. Drupal Services Module Setup
+
+https://www.drupal.org/project/services
+
+```
+drush dl services
+drush en -y rest_server
+```
+
+Then create a new endpoint by going to *admin/structure/services/add* with the
+following info:
+
+```
+machine name: api
+server: REST
+path: api
+debug: unchecked
+session authentication: checked
+```
+
+Then click the edit resources link and check the box next to each resource that
+should be available to your app:
+
+```
+comment
+file
+node
+system
+taxonomy_term
+taxonomy_vocabulary
+user
+```
+
+Then click *Save*. After that, click the *Server* tab and make sure the
+following boxes are checked:
+
+```
+json
+application/json
+application/x-www-form-urlencoded
+```
+
+Then click *Save*. After that flush all of Drupal's caches.
+
+```
+drush cc all
+```
+
+## 2. Angular JS Setup
 
 As usual, be sure to include the `angular-drupal.js` file in your app. This
 typically is included via the `index.html` file somewhere after you include the
