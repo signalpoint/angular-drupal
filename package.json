@@ -1,6 +1,6 @@
 {
   "name": "angular-drupal",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An Angular module for Drupal RESTful Services.",
   "main": "index.js",
   "scripts": {
