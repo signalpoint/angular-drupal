@@ -25,7 +25,7 @@ angular.module('angular-drupal').config(function($provide) {
 
   $provide.value('drupalSettings', {
     sitePath: 'http://my-drupal-site.com',
-    endpoint: 'my-services-endpoint'
+    endpoint: 'api'
   });
 
 });
