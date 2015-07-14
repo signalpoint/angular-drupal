@@ -5,7 +5,8 @@ An Angular JS module for Drupal 7 Services.
 # Intro
 
 This Angular module makes it easy to `read/write` entity data `to/from` Drupal,
-as well as handling user authentication and registration.
+handles user authentication and registration, and makes it easy to retrieve
+JSON data from Views.
 
 Here's a very *simple* Angular app that loads `node # 123` from Drupal and then
 displays the node's title (via an `alert`):
@@ -33,9 +34,19 @@ angular.module('angular-drupal').config(function($provide) {
 
 # Installation and Setup
 
-There are two main parts to the installation and usage of this module. First you
-need to install the *Drupal Services* module, then include the *angular-drupal*
+There are two main parts to the installation and usage of this module. First,
+on your Drupal site you need to install the *Angular Drupal* module, then
+install and configure *Services* module, and then include the *angular-drupal*
 module in your Angular JS application.
+
+## 0. Angular Drupal Module
+
+https://www.drupal.org/project/angular_drupal
+
+```
+drush dl angular_drupal
+drush en -y angular_drupal
+```
 
 ## 1. Drupal Services Module Setup
 
@@ -490,6 +501,25 @@ drupal.taxonomy_vocabulary_index(query).then(function(taxonomy_vocabularys) {
     alert(msg);
 });
 ```
+
+## Views
+
+If you install the Views JSON module, which is available as a sub module of the
+Views Datasource module, you can easily set up a View page display to return
+JSON to your app:
+
+```
+var path = 'articles'; // The Drupal path to the Views JSON page display.
+drupal.views_json(path).then(function(rows) {
+  angular.forEach(rows, function(row, i) {
+    console.log(row.title);
+  });
+});
+```
+
+For more information on creating Views JSON page displays, read this:
+
+http://drupalgap.org/node/220
 
 ## X-CSRF-Token
 The `angular-drupal` module automatically takes care of the `X-CSRF-Token` when
