@@ -132,9 +132,9 @@ function drupal($http, $q, drupalSettings, drupalToken) {
             data: { account: account }
         }).then(function(result) {
           return result.data;
-          this.drupal.drupalUser = drupal_user_defaults();
-          this.drupal.drupalToken = null;
-          return drupal.connect();
+          //this.drupal.drupalUser = drupal_user_defaults();
+          //this.drupal.drupalToken = null;
+          //return drupal.connect();
         });
     });
   };
@@ -454,7 +454,39 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     });
   };
 
+  // VIEWS
+  this.views_json = function(path) {
+    var views_json_path = this.sitePath + '/' + path;
+    return $http.get(views_json_path).then(function(result) {
+      if (result.status == 200) {
+        console.log(result.data);
+
+        // If the "view" object is attached to the result data, then we can
+        // intelligently parse the results and return an easy to use array of
+        // row results to the caller.
+        // @TODO this feature is provided by DrupalGap, so we probably need an
+        // angular-drupal d.o module (and sub modules) to make this great
+        // feature available to Angular only apps, then DrupalGap 2 can be
+        // dependant on it.
+        if (result.data.view) {
+          var view = result.data.view;
+          var results = [];
+          angular.forEach(result.data[view.root], function(row) {
+            var result = row[view.child];
+            results.push(result);
+          });
+          return results;
+        }
+        // Otherwise, just return the raw data.
+        return result.data;
+
+      }
+    });
+  }
+
 }
+
+// ENTITY HELPERS
 
 /**
  * Returns an array of entity type names.
@@ -462,6 +494,10 @@ function drupal($http, $q, drupalSettings, drupalToken) {
  */
 function drupal_entity_types() {
   try {
+    // @TODO we should optionally utilize entity_get_info() here (similar to
+    // DrupalGap 2's connect and drupalgap.json file) and a drupal.json file
+    // here. If the developer hasn't provided one, we can fall back to the
+    // core entity types listed here.
     return [
       'comment',
       'file',
@@ -481,7 +517,8 @@ function drupal_entity_types() {
  */
 function drupal_entity_primary_key(entity_type) {
   try {
-    var key;
+    // @TODO support all entity types dynamically.
+    var key = null;
     switch (entity_type) {
       case 'comment': key = 'cid'; break;
       case 'file': key = 'fid'; break;
@@ -516,6 +553,7 @@ function drupal_entity_primary_key(entity_type) {
  */
 function drupal_entity_primary_key_title(entity_type) {
   try {
+    // @TODO support all entity types dynamically.
     var key = null;
     switch (entity_type) {
       case 'comment': key = 'subject'; break;
