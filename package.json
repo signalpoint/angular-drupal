@@ -1,7 +1,7 @@
 {
   "name": "angular-drupal",
-  "version": "0.0.5",
-  "description": "An Angular JS module for Drupal 7 Services.",
+  "version": "0.0.6",
+  "description": "An Angular JS module for Drupal 7.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

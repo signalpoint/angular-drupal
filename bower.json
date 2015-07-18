@@ -1,11 +1,11 @@
 {
   "name": "angular-drupal",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/easystreet3/angular-drupal",
   "authors": [
     "Tyler Frankenstein <tyler.frankenstein@gmail.com>"
   ],
-  "description": "An Angular JS module for Drupal 7 Services.",
+  "description": "An Angular JS module for Drupal 7.",
   "keywords": [
     "angular",
     "drupal"
