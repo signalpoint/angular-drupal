@@ -459,15 +459,10 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     var views_json_path = this.sitePath + '/' + path;
     return $http.get(views_json_path).then(function(result) {
       if (result.status == 200) {
-        console.log(result.data);
 
         // If the "view" object is attached to the result data, then we can
         // intelligently parse the results and return an easy to use array of
         // row results to the caller.
-        // @TODO this feature is provided by DrupalGap, so we probably need an
-        // angular-drupal d.o module (and sub modules) to make this great
-        // feature available to Angular only apps, then DrupalGap 2 can be
-        // dependant on it.
         if (result.data.view) {
           var view = result.data.view;
           var results = [];
