@@ -505,8 +505,8 @@ drupal.taxonomy_vocabulary_index(query).then(function(taxonomy_vocabularys) {
 ## Views
 
 If you install the Views JSON module, which is available as a sub module of the
-Views Datasource module, you can easily set up a View page display to return
-JSON to your app:
+Views Datasource module (https://www.drupal.org/project/views_datasource), you
+can easily set up a View page display to return JSON to your app:
 
 ```
 var path = 'articles'; // The Drupal path to the Views JSON page display.
