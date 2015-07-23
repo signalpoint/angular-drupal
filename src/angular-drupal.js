@@ -14,9 +14,7 @@ function drupal($http, $q, drupalSettings, drupalToken) {
 
   // GLOBALS
   var sitePath = drupalSettings.sitePath;
-  var restPath = sitePath + '/?q=' + drupalSettings.endpoint;
-  this.sitePath = sitePath;
-  this.restPath = restPath;
+  var restPath = sitePath;
 
   // @TODO provide a generic ENTITY CRUD layer to support non core entities.
 
@@ -44,7 +42,7 @@ function drupal($http, $q, drupalSettings, drupalToken) {
         }, 100);
       });
     }
-    return $http.get(sitePath + '/?q=services/session/token').then(function(result) {
+    return $http.get(restPath + '/rest/session/token').then(function(result) {
         if (result.status == 200) {
           drupalToken = result.data;
           //console.log('grabbed token from server: ' + drupalToken);
