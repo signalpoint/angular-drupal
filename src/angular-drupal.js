@@ -57,14 +57,22 @@ function drupal($http, $q, drupalSettings, drupalToken) {
       this.token : this.drupal.token;
     return _token_fn().then(function(token) {
         return $http({
-          method: 'POST',
-          url: restPath + '/system/connect.json',
-          headers: { 'X-CSRF-Token': token }
+          method: 'GET',
+          url: restPath + '/drupalgap/system/connect?_format=json',
+          /*headers: { 'X-CSRF-Token': token }*/
         }).then(function(result) {
           if (result.status == 200) { return result.data; }
         });
     });
   };
+  /*this.connect = function() {
+    var deferred = $q.defer();
+    setTimeout(function() {
+      deferred.notify('About to greet ');
+      deferred.resolve('Hello, ');
+    }, 100);
+    return deferred.promise;
+  };*/
 
   // USER LOGIN
   this.user_login = function(username, password) {
@@ -77,8 +85,12 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     var drupal = this;
     return $http({
         method: 'POST',
-        url: restPath + '/user/login.json',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        url: restPath + '/user/login',
+        /*url: restPath + '/user/login?' +
+          'name=' + encodeURIComponent(username) + '&pass=' + encodeURIComponent(password) + '&form_id=user_login_form',*/
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
         transformRequest: function(obj) {
           var str = [];
           for (var p in obj)
@@ -86,33 +98,28 @@ function drupal($http, $q, drupalSettings, drupalToken) {
           return str.join('&');
         },
         data: {
-          username: username,
-          password: password
+          name: username,
+          pass: password,
+          form_id: 'user_login_form',
+          _format: 'json'
         }
     }).then(function(result) {
-      drupal.drupalUser = result.user;
+      console.log(result);
+      /*drupal.drupalUser = result.user;
       drupal.drupalToken = null;
-      return drupal.connect();
+      return drupal.connect();*/
     });
 
   };
 
   // USER LOGOUT
   this.user_logout = function() {
-    var drupal = this;
-    return this.token().then(function(token) {
-        return $http({
-            method: 'POST',
-            url: restPath + '/user/logout.json',
-            headers: { 'X-CSRF-Token': token }
-        }).then(function(result) {
-          /*if (typeof drupalToken !== 'undefined') {
-            drupalToken = null;
-          }*/
-          this.drupal.drupalUser = drupal_user_defaults();
-          this.drupal.drupalToken = null;
-          return drupal.connect();
-        });
+    return $http({
+      method: 'GET',
+      url: restPath + '/user/logout'
+    }).then(function(result) {
+      drupal.drupalUser = drupal_user_defaults();
+      drupal.drupalToken = null;
     });
   };
 
