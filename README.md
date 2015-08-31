@@ -36,8 +36,8 @@ angular.module('angular-drupal').config(function($provide) {
 
 There are two main parts to the installation and usage of this module. First,
 on your Drupal site you need to install the *Angular Drupal* module, then
-install and configure *Services* module, and then include the *angular-drupal*
-module in your Angular JS application.
+install and configure the *Services* module. Finally, include the
+*angular-drupal* module in your Angular JS application.
 
 ## 0. Angular Drupal Module
 
