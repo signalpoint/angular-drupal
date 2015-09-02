@@ -531,9 +531,7 @@ drupal.token().then(function(token) {
 ```
 
 # DISCLAIMER
-I, `Tyler Frankenstein`, admit I am *n00b* when it comes to AngularJS. Writing
-this module was my gateway into learning AngularJS. This module has unit test
-coverage to maintain quality. I welcome comments, criticisms and pull requests.
+This module has unit test coverage to maintain quality, and welcomes comments,
+criticisms and pull requests.
 
 Thank you!
-
