@@ -54,6 +54,8 @@ function drupal($http, $q, drupalSettings, drupalToken) {
   };
 
   // SYSTEM CONNECT
+  // Send dummy body, otherwise Content-Type header wont be set
+  // https://goo.gl/OgAuBF
   this.connect = function() {
     var _token_fn = typeof this.token !== 'undefined' ?
       this.token : this.drupal.token;
@@ -61,7 +63,8 @@ function drupal($http, $q, drupalSettings, drupalToken) {
         return $http({
           method: 'POST',
           url: restPath + '/system/connect.json',
-          headers: { 'X-CSRF-Token': token }
+          headers: { 'X-CSRF-Token': token },
+          data: { dummy: null }
         }).then(function(result) {
           if (result.status == 200) { return result.data; }
         });
@@ -100,13 +103,16 @@ function drupal($http, $q, drupalSettings, drupalToken) {
   };
 
   // USER LOGOUT
+  // Send dummy body, otherwise Content-Type header wont be set
+  // https://goo.gl/OgAuBF
   this.user_logout = function() {
     var drupal = this;
     return this.token().then(function(token) {
         return $http({
             method: 'POST',
             url: restPath + '/user/logout.json',
-            headers: { 'X-CSRF-Token': token }
+            headers: { 'X-CSRF-Token': token },
+            data: { dummy: null }
         }).then(function(result) {
           /*if (typeof drupalToken !== 'undefined') {
             drupalToken = null;
