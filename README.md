@@ -161,6 +161,11 @@ drupal.user_logout().then(function(data) {
 });
 ```
 
+### USER REQUEST NEW PASSWORD
+```
+drupal.user_request_new_password('username_or_email').then(successFn, errorFn);
+```
+
 ## NODES
 
 ### CREATE
