@@ -139,6 +139,24 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     });
   };
 
+  // USER REQUEST NEW PASSWORD
+  // name can be the username or email
+  this.user_request_new_password = function(name) {
+    return this.token().then(function(token) {
+        return $http({
+            method: 'POST',
+            url: restPath + '/user/request_new_password.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            },
+            data: { name: name }
+        }).then(function(result) {
+          return result.data;
+        });
+    });
+  };
+
   // ENTITY LOAD FUNCTIONS
 
   this.comment_load = function(cid) {
