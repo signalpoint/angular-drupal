@@ -161,6 +161,29 @@ drupal.user_logout().then(function(data) {
 });
 ```
 
+### USER PASSWORD RESET
+
+Process the reset link sent by email. User ID, timestamp and hashed pass need to be extracted from links like:
+
+http://www.example.com/1/1441253855/Al-982NmYehyB3mC9suEO_cuQznbR6OlUP3C7CGYA_M
+```
+
+drupal.user_pass_reset(1, '1441253855', 'Al-982NmYehyB3mC9suEO_cuQznbR6OlUP3C7CGYA_M').then(successFn, errorFn);
+```
+
+Success function will receive a token (pass_reset_token) which you have to save, it will allow you to create an user edit form without the Current Password field, but yo
+```
+
+var account = {
+  uid: 123,
+  name: 'john',
+  resetToken: pass_reset_token
+};
+drupal.user_save(account).then(function(data) {
+  alert('Name changed to: ' + data.name);
+});
+```
+
 ## NODES
 
 ### CREATE
