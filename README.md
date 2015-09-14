@@ -171,7 +171,7 @@ http://www.example.com/1/1441253855/Al-982NmYehyB3mC9suEO_cuQznbR6OlUP3C7CGYA_M
 drupal.user_pass_reset(1, '1441253855', 'Al-982NmYehyB3mC9suEO_cuQznbR6OlUP3C7CGYA_M').then(successFn, errorFn);
 ```
 
-Success function will receive a token (pass_reset_token) which you have to save, it will allow you to create an user edit form without the Current Password field, but yo
+Success function will receive a token (pass_reset_token) which you have to save, it will allow you to create an user edit form without the Current Password field, but you need to send this token to the user edit method like this:
 ```
 
 var account = {
@@ -183,6 +183,9 @@ drupal.user_save(account).then(function(data) {
   alert('Name changed to: ' + data.name);
 });
 ```
+
+Also you need the following services patch in order to use this function https://www.drupal.org/node/2402339#comment-10302551
+
 
 ## NODES
 
