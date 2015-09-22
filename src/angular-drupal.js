@@ -335,7 +335,7 @@ function drupal($http, $q, drupalSettings, drupalToken) {
       url = this.restPath + '/user/' + account.uid + '.json';
     }
     if (!angular.isUndefined(account.resetToken)) {
-      url += '?pass-reset-token=' + account.resetToken;
+      url += '&pass-reset-token=' + account.resetToken;
     }
     var options = {
       method: method,
