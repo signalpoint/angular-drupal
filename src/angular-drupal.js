@@ -13,10 +13,44 @@ angular.module('angular-drupal', []).
 function drupal($http, $q, drupalSettings, drupalToken) {
 
   // GLOBALS
+  var url_prepend = '/?q=';
   var sitePath = drupalSettings.sitePath;
   var restPath = sitePath + '/?q=' + drupalSettings.endpoint;
   this.sitePath = sitePath;
   this.restPath = restPath;
+
+  // Check if CleanURLs are enabled.
+  var xmlhttp;
+
+  if (window.XMLHttpRequest) {
+    // code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest();
+  } else {
+    // code for IE6, IE5
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+  //Once the response is available it change the url_prepend variable based on the CleanURLS status.
+  xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+      if (xmlhttp.status == 200) {
+          if (xmlhttp.responseText.status = 'true') {
+            url_prepend = '/';
+            restPath = sitePath + url_prepend + drupalSettings.endpoint;
+          }
+      }
+      else if (xmlhttp.status == 400) {
+        console.log('There was an 400 error while checking the status of CleanURLs')
+      }
+      else {
+        console.log('There was a generic error while checking the status of CleanURLs.')
+      }
+    }
+  };
+
+  //Open and send a Synch GET request to the server, checking if CleanURLs are enabled.
+  xmlhttp.open("GET", sitePath + "/admin/config/search/clean-urls/check", true);
+  xmlhttp.send();
 
   // @TODO provide a generic ENTITY CRUD layer to support non core entities.
 
@@ -44,7 +78,7 @@ function drupal($http, $q, drupalSettings, drupalToken) {
         }, 100);
       });
     }
-    return $http.get(sitePath + '/?q=services/session/token').then(function(result) {
+    return $http.get(sitePath + + url_prepend + 'services/session/token').then(function(result) {
         if (result.status == 200) {
           drupalToken = result.data;
           //console.log('grabbed token from server: ' + drupalToken);
@@ -661,4 +695,3 @@ function drupal_user_defaults() {
   }
   catch (error) { console.log('drupal_user_defaults - ' + error); }
 }
-
