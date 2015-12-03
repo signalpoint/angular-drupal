@@ -1,6 +1,6 @@
 # angular-drupal
 
-An Angular JS module for Drupal 7 Services.
+An Angular JS module for Drupal 8 RESTful Web Services.
 
 # Intro
 
@@ -25,8 +25,7 @@ angular.module('myApp', ['angular-drupal']).run(['drupal', function(drupal) {
 angular.module('angular-drupal').config(function($provide) {
 
   $provide.value('drupalSettings', {
-    sitePath: 'http://my-drupal-site.com',
-    endpoint: 'api'
+    sitePath: 'http://my-drupal-site.com'
   });
 
 });
@@ -48,52 +47,31 @@ drush dl angular_drupal
 drush en -y angular_drupal
 ```
 
-## 1. Drupal Services Module Setup
+## 1. Drupal Setup
 
-https://www.drupal.org/project/services
+### 1.1 Enable Drupal core's "RESTful Web Services" module
 
-```
-drush dl services
-drush en -y rest_server
-```
+### 1.2 Install the REST UI module
 
-Then create a new endpoint by going to *admin/structure/services/add* with the
-following info:
+https://www.drupal.org/project/restui
 
-```
-machine name: api
-server: REST
-path: api
-debug: unchecked
-session authentication: checked
-```
-
-Then click the edit resources link and check the box next to each resource that
-should be available to your app:
+Then go to "admin/config/services/rest" and enable your desired resources. We
+recommend the following resources, http methods, authentications, and formats:
 
 ```
-comment
-file
-node
-system
-taxonomy_term
-taxonomy_vocabulary
-user
+User - GET - json - cookie
+User - POST - json - cookie
 ```
 
-Then click *Save*. After that, click the *Server* tab and make sure the
-following boxes are checked:
+### 1.3 Specify User Permissions
+
+Go to admin/people/permissions and allow a user role(s) to access some of these
+resources. We recommend the following (at minimum) for anonymous and
+authenticated users:
 
 ```
-json
-application/json
-application/x-www-form-urlencoded
-```
-
-Then click *Save*. After that flush all of Drupal's caches.
-
-```
-drush cc all
+Access GET on Content resource
+Access GET on User resource
 ```
 
 ## 2. Angular JS Setup
@@ -144,11 +122,10 @@ drupal.user_register(account).then(function(data) {
 ```
 
 ### USER LOGIN
+@see https://www.drupal.org/node/2403307
 ```
 drupal.user_login('bob', 'secret').then(function(data) {
-  if (data.user.uid) {
-    alert('Hello ' + data.user.name + '!');
-  }
+  
 });
 ```
 

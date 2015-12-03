@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Globals
+#APP_MODULES_DIRECTORY="app/modules"
+#APP_MODULES_CUSTOM_DIRECTORY="$APP_MODULES_DIRECTORY/custom"
+
+function angular_drupal_install() {
+  cd app
+  mkdir bower_components
+  cd bower_components
+  mkdir angular
+  cd angular/
+  wget https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js
+  mv angular.min.js angular.js
+  cd ../
+  mkdir angular-route
+  cd angular-route/
+  wget https://code.angularjs.org/1.4.2/angular-route.min.js
+  mv angular-route.min.js angular-route.js
+  cd ../
+  mkdir angular-resource
+  cd angular-resource/
+  wget https://code.angularjs.org/1.4.2/angular-resource.min.js
+  mv angular-resource.min.js angular-resource.js
+  cd ../
+  mkdir angular-mocks
+  cd angular-mocks/
+  wget https://code.angularjs.org/1.4.2/angular-mocks.js
+  cd ../
+  mkdir angular-drupal
+  cd angular-drupal
+  ln -s ../../../src/angular-drupal.js angular-drupal.js
+}
+
+
+case "$1" in
+install) angular_drupal_install;;
+-*) usage "bad argument $1";;
+esac
+
