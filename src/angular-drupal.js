@@ -163,6 +163,29 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     });
   };
 
+  // USER REQUEST NEW PASSWORD PROCESS LINK
+  // It receives uid, timestamp and hashed_pass arguments sent
+  // on the request password email. It requires patch in https://goo.gl/GVPytP
+  this.user_pass_reset = function(uid, timestamp, hashed_pass) {
+    return this.token().then(function(token) {
+        return $http({
+            method: 'POST',
+            url: restPath + '/user/user_pass_reset.json',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': token
+            },
+            data: {
+              uid: uid,
+              timestamp: timestamp,
+              hashed_pass: hashed_pass
+            }
+        }).then(function(result) {
+          return result.data;
+        });
+    });
+  };
+
   // ENTITY LOAD FUNCTIONS
 
   this.comment_load = function(cid) {
@@ -334,6 +357,9 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     else {
       method = 'PUT';
       url = this.restPath + '/user/' + account.uid + '.json';
+    }
+    if (!angular.isUndefined(account.resetToken)) {
+      url += '&pass-reset-token=' + account.resetToken;
     }
     var options = {
       method: method,
