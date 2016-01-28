@@ -50,15 +50,17 @@ drush en -y angular_drupal
 
 ## 1. Drupal Services Module Setup
 
-https://www.drupal.org/project/services
+By enabling the `angular_drupal` module, that will enable the `services` module by default:
+
+- https://www.drupal.org/project/services
+
+Then just enable the `rest_server` sub module that comes with `services`:
 
 ```
-drush dl services
 drush en -y rest_server
 ```
 
-Then create a new endpoint by going to *admin/structure/services/add* with the
-following info:
+Then create a new endpoint by going to `admin/structure/services/add` with the following info:
 
 ```
 machine name: api
@@ -68,8 +70,7 @@ debug: unchecked
 session authentication: checked
 ```
 
-Then click the edit resources link and check the box next to each resource that
-should be available to your app:
+Save it, then click the edit resources link and check the box next to each resource that should be available to your app:
 
 ```
 comment
@@ -81,8 +82,7 @@ taxonomy_vocabulary
 user
 ```
 
-Then click *Save*. After that, click the *Server* tab and make sure the
-following boxes are checked:
+Then click *Save*. After that, click the *Server* tab and make sure the following boxes are checked:
 
 ```
 json
