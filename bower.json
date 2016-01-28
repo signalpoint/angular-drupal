@@ -11,6 +11,7 @@
     "drupal"
   ],
   "license": "GNU",
+  "main": "./src/angular-drupal.js",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -19,10 +20,10 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.x",
-    "angular-mocks": "~1.4.x",
-    "angular-route": "~1.4.x",
-    "angular-resource": "~1.4.x"
+    "angular": "~1.4.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.x"
   },
   "resolutions": {
     "angular": "~1.4.x"
