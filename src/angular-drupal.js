@@ -453,6 +453,25 @@ function drupal($http, $q, drupalSettings, drupalToken) {
         if (result.status == 200) { return result.data; }
     });
   };
+  
+  // ENTITY TARGETED ACTIONS
+
+  // ATTACH FILE TO NODE
+  this.node_attach_file = function(nid, data) {
+    var options = {
+      method: 'POST',
+      url: this.restPath + '/node/' + nid + '/attach_file',
+      transformRequest: angular.identity,
+      headers: {'Content-Type': undefined, 'Accept': 'application/json'},
+      data: data,
+    };
+    return this.token().then(function(token) {
+        options.headers['X-CSRF-Token'] = token;
+        return $http(options).then(function(result) {
+            if (result.status == 200) { return result.data; }
+        });
+    });
+  };
 
   // VIEWS
   this.views_json = function(path) {
