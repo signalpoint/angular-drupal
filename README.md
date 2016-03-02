@@ -12,4 +12,4 @@ This is a WIP in wrapping an Angular service around jDrupal.  See [Merge with jD
 2. Add the [`jDrupal 8.x-1.x javascript`](https://github.com/easystreet3/jDrupal/tree/8.x-1.x) to the project and the respective `<script>` tag in `index.html` as described in jDrupal docs.
 3. Add `angular-drupal.js` to the project and the respective `<script>` tag in `index.html`.
 4. Configure `angular-drupal.js` in your project's `app.js` (see the example [`app.js`](https://github.com/kentr/angular-drupal/blob/8.x-1.x/app/app.js).).
-5. Use the `$drupal` service in Angular as with other services.
+5. Use the `$drupal` service in your Angular code as with other services.
