@@ -13,4 +13,4 @@ angular.module('angular-drupal', [])
   // jDrupal is initialized globally in jdrupal.js
   jDrupal.config('sitePath', drupalSettings.sitePath);
   return jDrupal;
-});
+}]);
