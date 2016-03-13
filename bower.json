@@ -5,7 +5,7 @@
   "authors": [
     "Tyler Frankenstein <tyler.frankenstein@gmail.com>"
   ],
-  "description": "An Angular JS module for Drupal 7.",
+  "description": "An Angular JS module for Drupal 8.",
   "keywords": [
     "angular",
     "drupal"
