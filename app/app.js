@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('angularDrupalApp', ['angular-drupal']).
-  run(['$drupal', function($drupal) {
+  run(['drupal', function(drupal) {
 
     // Use drupal here...
-    $drupal.nodeLoad(1).then(function(node) {
+    drupal.nodeLoad(1).then(function(node) {
       console.log(node.getTitle());
     });
   }]);
