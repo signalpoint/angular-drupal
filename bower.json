@@ -1,11 +1,12 @@
 {
   "name": "angular-drupal",
   "version": "0.0.6",
-  "homepage": "https://github.com/easystreet3/angular-drupal",
+  "homepage": "https://github.com/kentr/angular-drupal",
   "authors": [
-    "Tyler Frankenstein <tyler.frankenstein@gmail.com>"
+    "Tyler Frankenstein <tyler.frankenstein@gmail.com>",
+    "Kent Richards <info@kentrichards.net>"
   ],
-  "description": "An Angular JS module for Drupal 7.",
+  "description": "An Angular JS module for Drupal 8.",
   "keywords": [
     "angular",
     "drupal"
@@ -22,7 +23,8 @@
     "angular": "~1.4.x",
     "angular-mocks": "~1.4.x",
     "angular-route": "~1.4.x",
-    "angular-resource": "~1.4.x"
+    "angular-resource": "~1.4.x",
+    "jdrupal": "8.x-1.x"
   },
   "resolutions": {
     "angular": "~1.4.x"

@@ -2,7 +2,7 @@
 
 An Angular JS module for Drupal 8 RESTful Web Services.
 
-# Intro
+## Intro
 
 This Angular module makes it easy to `read/write` entity data `to/from` Drupal,
 handles user authentication and registration, and makes it easy to retrieve
@@ -31,31 +31,33 @@ angular.module('angular-drupal').config(function($provide) {
 });
 ```
 
-# Installation and Setup
+## Installation and Setup
 
 There are two main parts to the installation and usage of this module. First,
-on your Drupal site you need to install the *Angular Drupal* module, then
+on your Drupal site you need to install the *jDrupal* module, then
 install and configure *Services* module, and then include the *angular-drupal*
 module in your Angular JS application.
 
-## 0. Angular Drupal Module
+### 0. jDrupal Module
 
-https://www.drupal.org/project/angular_drupal
+https://www.drupal.org/project/jdrupal
 
 ```
-drush dl angular_drupal
-drush en -y angular_drupal
+drush dl jdrupal
+drush en -y jdrupal
 ```
 
-## 1. Drupal Setup
+### 1. Drupal Setup
 
-### 1.1 Enable Drupal core's "RESTful Web Services" module
+See [jDrupal docs](http://jdrupal.easystreet3.com/8/docs/Install) for details.
 
-### 1.2 Install the REST UI module
+#### 1.1 Enable Drupal core's "RESTful Web Services" module
+
+#### 1.2 Install the REST UI module
 
 https://www.drupal.org/project/restui
 
-Then go to "admin/config/services/rest" and enable your desired resources. We
+Then go to `admin/config/services/rest` and enable your desired resources. We
 recommend the following resources, http methods, authentications, and formats:
 
 ```
@@ -63,7 +65,7 @@ User - GET - json - cookie
 User - POST - json - cookie
 ```
 
-### 1.3 Specify User Permissions
+#### 1.3 Specify User Permissions
 
 Go to admin/people/permissions and allow a user role(s) to access some of these
 resources. We recommend the following (at minimum) for anonymous and
@@ -74,13 +76,17 @@ Access GET on Content resource
 Access GET on User resource
 ```
 
-## 2. Angular JS Setup
+### 2. Angular JS Setup
 
-As usual, be sure to include the `angular-drupal.js` file in your app. This
-typically is included via the `index.html` file somewhere after you include the
+install `jdrupal.js` and `angular-drupal.js`.  If using bower:
+
+`bower install --save angular-drupal#8.x-1.x`
+
+As usual, be sure to include the `jdrupal.js` and `angular-drupal.js` file in your app. This typically is included via the `index.html` file somewhere after you include the
 `angular.js` file:
 
 ```
+<script src="jdrupal.js"></script>
 <script src="angular-drupal.js"></script>
 ```
 
@@ -97,11 +103,11 @@ simple app to provide the URL to our Drupal site, as well as the machine name of
 the Services endpoint. Without this, the module won't know how to connect to
 our Drupal site, so this must be added to our app as in the example above.
 
-# Usage
+## Usage
 
-## AUTHENTICATION
+### AUTHENTICATION
 
-### CONNECT
+#### CONNECT
 ```
 drupal.connect().then(function(data) {
   if (data.user.uid) { alert('Hello ' + data.user.name + '!'); }
@@ -109,7 +115,7 @@ drupal.connect().then(function(data) {
 });
 ```
 
-### USER REGISTRATION
+#### USER REGISTRATION
 ```
 var account = {
   name: 'bob',
@@ -121,15 +127,15 @@ drupal.user_register(account).then(function(data) {
 });
 ```
 
-### USER LOGIN
+#### USER LOGIN
 @see https://www.drupal.org/node/2403307
 ```
 drupal.user_login('bob', 'secret').then(function(data) {
-  
+
 });
 ```
 
-### USER LOGOUT
+#### USER LOGOUT
 ```
 drupal.user_logout().then(function(data) {
   if (!data.user.uid) {
@@ -138,9 +144,9 @@ drupal.user_logout().then(function(data) {
 });
 ```
 
-## NODES
+### NODES
 
-### CREATE
+#### CREATE
 ```
 var node = {
   type: 'article',
@@ -153,14 +159,14 @@ drupal.node_save(node).then(function(data) {
 });
 ```
 
-### RETRIEVE
+#### RETRIEVE
 ```
 drupal.node_load(123).then(function(node) {
     alert('Loaded node: ' + node.title);
 });
 ```
 
-### UPDATE
+#### UPDATE
 ```
 var node = {
   nid: 123,
@@ -175,7 +181,7 @@ drupal.node_save(node).then(function(data) {
 });
 ```
 
-### DELETE
+#### DELETE
 ```
 drupal.node_delete(123).then(function(data) {
     if (data[0]) {
@@ -184,7 +190,7 @@ drupal.node_delete(123).then(function(data) {
 });
 ```
 
-### INDEX
+#### INDEX
 ```
 var query = {
   parameters: {
@@ -201,9 +207,9 @@ drupal.node_index(query).then(function(nodes) {
 });
 ```
 
-## USERS
+### USERS
 
-### CREATE
+#### CREATE
 To create a new user account, the user must have the `Administer users`
 permission enabled in Drupal.
 ```
@@ -217,14 +223,14 @@ drupal.user_save(account).then(function(data) {
 });
 ```
 
-### RETRIEVE
+#### RETRIEVE
 ```
 drupal.user_load(1).then(function(account) {
     alert('Loaded user: ' + account.name);
 });
 ```
 
-### UPDATE
+#### UPDATE
 To update an existing user account, the user must have the `Change own username`
 or `Administer users` permission enabled in Drupal.
 ```
@@ -237,7 +243,7 @@ drupal.user_save(account).then(function(data) {
 });
 ```
 
-### DELETE
+#### DELETE
 The user must have the `Administer users` permission to delete a user account.
 ```
 drupal.user_delete(123).then(function(data) {
@@ -247,7 +253,7 @@ drupal.user_delete(123).then(function(data) {
 });
 ```
 
-### INDEX
+#### INDEX
 ```
 var query = {
   parameters: {
@@ -264,9 +270,9 @@ drupal.user_index(query).then(function(users) {
 });
 ```
 
-## COMMENTS
+### COMMENTS
 
-### CREATE
+#### CREATE
 ```
 var comment = {
   nid: 123,
@@ -278,14 +284,14 @@ drupal.comment_save(comment).then(function(data) {
 });
 ```
 
-### RETRIEVE
+#### RETRIEVE
 ```
-drupal.comment_load(123).then(function(comment) {        
-    alert('Loaded comment: ' + comment.subject);  
+drupal.comment_load(123).then(function(comment) {
+    alert('Loaded comment: ' + comment.subject);
 });
 ```
 
-### UPDATE
+#### UPDATE
 ```
 var comment = {
   cid: 456,
@@ -297,7 +303,7 @@ drupal.comment_save(comment).then(function(data) {
 });
 ```
 
-### DELETE
+#### DELETE
 ```
 drupal.comment_delete(123).then(function(data) {
     if (data[0]) {
@@ -306,7 +312,7 @@ drupal.comment_delete(123).then(function(data) {
 });
 ```
 
-### INDEX
+#### INDEX
 ```
 var query = {
   parameters: {
@@ -323,9 +329,9 @@ drupal.comment_index(query).then(function(comments) {
 });
 ```
 
-## FILES
+### FILES
 
-### CREATE
+#### CREATE
 ```
 var base_64_encoded_image = 'abc...xyz';
 var file = {
@@ -338,7 +344,7 @@ drupal.file_save(file).then(function(data) {
 });
 ```
 
-### RETRIEVE
+#### RETRIEVE
 To load a file the user must have the `Get any binary files ` permission in
 Drupal.
 ```
@@ -347,9 +353,9 @@ drupal.file_load(123).then(function(file) {
 });
 ```
 
-## TAXONOMY TERMS
+### TAXONOMY TERMS
 
-### CREATE
+#### CREATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
 var taxonomy_term = {
@@ -363,14 +369,14 @@ drupal.taxonomy_term_save(taxonomy_term).then(function(data) {
 });
 ```
 
-### RETRIEVE
+#### RETRIEVE
 ```
 drupal.taxonomy_term_load(123).then(function(term) {
     alert('Loaded term: ' + term.name);
 });
 ```
 
-### UPDATE
+#### UPDATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_UPDATED/7
 var taxonomy_term = {
@@ -385,7 +391,7 @@ drupal.taxonomy_term_save(taxonomy_term).then(function(data) {
 });
 ```
 
-### DELETE
+#### DELETE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_DELETED/7
 drupal.taxonomy_term_delete(123).then(function(data) {
@@ -395,7 +401,7 @@ drupal.taxonomy_term_delete(123).then(function(data) {
 });
 ```
 
-### INDEX
+#### INDEX
 ```
 var query = {
   parameters: {
@@ -412,9 +418,9 @@ drupal.taxonomy_term_index(query).then(function(taxonomy_terms) {
 });
 ```
 
-## TAXONOMY VOCABULARIES
+### TAXONOMY VOCABULARIES
 
-### CREATE
+#### CREATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_NEW/7
 var taxonomy_vocabulary = {
@@ -429,14 +435,14 @@ drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(data) {
 });
 ```
 
-### RETRIEVE
+#### RETRIEVE
 ```
 drupal.taxonomy_vocabulary_load(1).then(function(vocabulary) {
-    alert('Loaded vocabulary: ' + vocabulary.name); 
+    alert('Loaded vocabulary: ' + vocabulary.name);
 });
 ```
 
-### UPDATE
+#### UPDATE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_UPDATED/7
 var taxonomy_vocabulary = {
@@ -452,7 +458,7 @@ drupal.taxonomy_vocabulary_save(taxonomy_vocabulary).then(function(data) {
 });
 ```
 
-### DELETE
+#### DELETE
 ```
 // @see https://api.drupal.org/api/drupal/includes!common.inc/constant/SAVED_DELETED/7
 drupal.taxonomy_vocabulary_delete(123).then(function(data) {
@@ -462,7 +468,7 @@ drupal.taxonomy_vocabulary_delete(123).then(function(data) {
 });
 ```
 
-### INDEX
+#### INDEX
 ```
 var query = {
   parameters: {
@@ -479,7 +485,7 @@ drupal.taxonomy_vocabulary_index(query).then(function(taxonomy_vocabularys) {
 });
 ```
 
-## Views
+### Views
 
 If you install the Views JSON module, which is available as a sub module of the
 Views Datasource module (https://www.drupal.org/project/views_datasource), you
@@ -498,7 +504,7 @@ For more information on creating Views JSON page displays, read this:
 
 http://drupalgap.org/node/220
 
-## X-CSRF-Token
+### X-CSRF-Token
 The `angular-drupal` module automatically takes care of the `X-CSRF-Token` when
 it is needed. If you need to manually get the token it can easily be retrieved:
 ```
@@ -507,7 +513,7 @@ drupal.token().then(function(token) {
 });
 ```
 
-# DISCLAIMER
+## DISCLAIMER
 I, `Tyler Frankenstein`, admit I am very much a *n00b* when it comes to Angular
 JS. The way this module is currently written is by no means the *Angular* way to
 do it. Writing this module is my gateway into learning Angular. This module has
