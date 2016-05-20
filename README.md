@@ -269,11 +269,3 @@ and contributions for this project. Thank you!
 
 
 ```
-
-## DISCLAIMER
-I, `Tyler Frankenstein`, admit I am very much a *n00b* when it comes to Angular
-JS. The way this module is currently written is by no means the *Angular* way to
-do it. Writing this module is my gateway into learning Angular. This module has
-unit test coverage to maintain quality. I very much welcome comments, criticisms
-and contributions for this project. Thank you!
-
