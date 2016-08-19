@@ -28,7 +28,7 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     // progresses.
     if (typeof this.drupal !== 'undefined') {
       if (this.drupal.drupalToken) {
-        console.log('grabbed token from "this" memory: ' + drupalToken);
+        //console.log('grabbed token from "this" memory: ' + drupalToken);
         return $q(function(resolve, reject) {
           setTimeout(function() {
               resolve(this.drupal.drupalToken);
@@ -37,7 +37,7 @@ function drupal($http, $q, drupalSettings, drupalToken) {
       }
     }
     else if (drupalToken) {
-      console.log('grabbed token from memory: ' + drupalToken);
+      //console.log('grabbed token from memory: ' + drupalToken);
       return $q(function(resolve, reject) {
         setTimeout(function() {
             resolve(drupalToken);
@@ -46,7 +46,7 @@ function drupal($http, $q, drupalSettings, drupalToken) {
     }
     return $http.get(sitePath + '/?q=services/session/token').then(function(result) {
         if (result.status == 200) {
-          drupalToken = result.data;
+          drupalToken = result.data.trim();
           //console.log('grabbed token from server: ' + drupalToken);
           return drupalToken;
         }
